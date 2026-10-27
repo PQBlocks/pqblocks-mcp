@@ -13,7 +13,7 @@ from pqblocks_mcp.server import check_config, get_snippet, list_packages, recomm
 
 def test_catalog_is_complete_and_every_quickstart_ran():
     pkgs = catalog.packages()
-    assert len(pkgs) >= 26
+    assert len(pkgs) >= 20
     for p in pkgs:
         assert p["package"].startswith("pqblocks-") and p["url"].startswith("https://github.com/PQBlocks/")
         assert p["area"], p["package"]

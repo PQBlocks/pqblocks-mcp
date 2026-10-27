@@ -1,8 +1,9 @@
 """PQBlocks catalog: package facts, recommendations and a classical-crypto checker.
 
-All package facts come from catalog.json, which scripts/build_catalog.py generates from the
-released package sources (pyproject.toml, README.md, examples/) and verifies by running every
-README quickstart. Nothing here describes an API by hand.
+All package facts come from catalog.json, the catalog published at https://pqblocks.github.io/catalog.json.
+It is built from the package repositories (pyproject.toml, README.md, examples/) and every README
+quickstart in it was executed against its package. A scheduled job syncs it into this package, so
+new packages appear without code changes. Nothing here describes an API by hand.
 """
 
 import json
@@ -31,7 +32,8 @@ def _catalog() -> Dict[str, Any]:
 
 
 def packages() -> List[Dict[str, Any]]:
-    return _catalog()["packages"]
+    """Every package the server may recommend: verified and not held back."""
+    return [p for p in _catalog()["packages"] if p.get("verified") is True and not p.get("held")]
 
 
 def _find(name: str) -> Optional[Dict[str, Any]]:

@@ -1,0 +1,30 @@
+name: Sync catalog
+
+# Pulls the published package catalog from the docs site, runs the tests, and commits it when it
+# changed. New packages reach the MCP server without a code change.
+
+on:
+  schedule:
+    - cron: "47 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
+        with:
+          python-version: "3.12"
+      - run: curl -fsSL https://pqblocks.github.io/catalog.json -o src/pqblocks_mcp/catalog.json
+      - run: python3 -c "import json; c = json.load(open('src/pqblocks_mcp/catalog.json')); assert len(c['packages']) > 0"
+      - run: pip install -e ".[test]" && pytest -q
+      - name: Commit when it changed
+        run: |
+          git add src/pqblocks_mcp/catalog.json
+          if git diff --cached --quiet; then echo "catalog unchanged"; exit 0; fi
+          git -c user.name=MrGovindDubey -c user.email=govinddubeycse@gmail.com commit -m "chore: sync package catalog"
+          git push

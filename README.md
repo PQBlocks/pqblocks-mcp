@@ -16,12 +16,12 @@ claude mcp add pqblocks -- uvx --from git+https://github.com/PQBlocks/pqblocks-m
 
 ## Why PQBlocks MCP
 
-Ask an assistant to "add post-quantum encryption" and it will often invent a function name. This server answers from a catalog generated from the 26 PQBlocks packages themselves, in which **every quickstart was executed against its package** before it was written. The agent gets a real package, the install line that works today and code that runs.
+Ask an assistant to "add post-quantum encryption" and it will often invent a function name. This server answers from a catalog generated from the PQBlocks packages themselves, in which **every quickstart was executed against its package** before it was written. The agent gets a real package, the install line that works today and code that runs.
 
 ```mermaid
 flowchart LR
     A[Agent: "sign JWTs with ML-DSA"] -->|recommend_package| S[pqblocks-mcp]
-    S --> C[(catalog.json<br/>26 packages<br/>quickstarts executed)]
+    S --> C[(catalog.json<br/>every package<br/>quickstarts executed)]
     S -->|package · install · import · quickstart · docs| A
     A -->|get_snippet / check_config| S
 ```
@@ -79,8 +79,8 @@ for f in check_config('key = rsa.generate_private_key(key_size=2048)')["findings
 
 ## Verification
 
-- `tests/test_server.py` checks that all 26 catalog entries are verified and parse, that 22 realistic tasks route to the right package, that a package is never recommended for something its README says it does not do, that the config checker has no false positives on hybrid names, and the full stdio protocol (initialize, notifications, tools/list, tools/call, errors, ping).
-- The catalog is rebuilt with `python3 scripts/build_catalog.py <packages-dir> --verify`, which runs every quickstart and records the result.
+- `tests/test_server.py` checks that every catalog entry is verified and parses, that 22 realistic tasks route to the right package, that a package is never recommended for something its README says it does not do, that the config checker has no false positives on hybrid names, and the full stdio protocol (initialize, notifications, tools/list, tools/call, errors, ping).
+- The catalog is built in the [`pqblocks.github.io`](https://github.com/PQBlocks/pqblocks.github.io) repository, which runs every quickstart, and synced here every six hours by `.github/workflows/sync-catalog.yml` after the tests pass. New packages appear without a code change.
 
 ```bash
 pip install -e ".[test]" && pytest -q

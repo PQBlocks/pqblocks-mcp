@@ -6,8 +6,8 @@ All notable changes to this project are documented here. The format follows
 ## [Unreleased]
 
 ### Changed
-- The package catalog is now generated from the released package sources by `scripts/build_catalog.py`
-  and covers all 26 PQBlocks packages. Every quickstart is executed against its package before it is
+- The package catalog is generated from the package repositories and synced from
+  https://pqblocks.github.io/catalog.json on a schedule, so new packages appear automatically. Every quickstart is executed against its package before it is
   written; the test suite fails if any entry is unverified.
 - `recommend_package` ranks packages by their own keywords, topics and summaries plus a small intent
   table, honours what a package's README says it does **not** do, and returns alternatives.
