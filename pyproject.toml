@@ -1,16 +1,17 @@
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = ["setuptools>=69"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "pqblocks-mcp"
 version = "0.1.0"
-description = "Model Context Protocol (MCP) server for post-quantum cryptography packages and quantum-inspired optimization."
+description = "MCP server that tells AI coding agents which PQBlocks package to use, with install lines and quickstarts verified to run."
 readme = "README.md"
 authors = [{ name = "PQBlocks", email = "govinddubeycse@gmail.com" }]
 license = { text = "Apache-2.0" }
+requires-python = ">=3.10"
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: Apache Software License",
     "Programming Language :: Python :: 3",
@@ -31,12 +32,16 @@ keywords = [
     "ai-agents",
     "quantum-safe",
     "fips-203",
-    "fips-204"
+    "fips-204",
+    "quantum-inspired",
+    "claude-code",
+    "cursor"
 ]
 dependencies = []
 
 [project.optional-dependencies]
-fastmcp = ["mcp>=1.0.0"]
+# the official SDK transport; v2 renamed FastMCP, so stay on v1 until the server is ported
+sdk = ["mcp>=1.2,<2"]
 test = ["pytest"]
 
 [project.scripts]
@@ -44,6 +49,10 @@ pqblocks-mcp = "pqblocks_mcp.server:main"
 
 [project.urls]
 Homepage = "https://github.com/PQBlocks/pqblocks-mcp"
-Documentation = "https://pqblocks.github.io"
+Documentation = "https://pqblocks.github.io/ai/mcp/"
 Repository = "https://github.com/PQBlocks/pqblocks-mcp.git"
 Issues = "https://github.com/PQBlocks/pqblocks-mcp/issues"
+Changelog = "https://github.com/PQBlocks/pqblocks-mcp/blob/main/CHANGELOG.md"
+
+[tool.setuptools.package-data]
+pqblocks_mcp = ["catalog.json"]
