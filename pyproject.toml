@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pqblocks-mcp"
+version = "0.1.0"
+description = "Model Context Protocol (MCP) server for post-quantum cryptography packages and quantum-inspired optimization."
+readme = "README.md"
+authors = [{ name = "PQBlocks", email = "govinddubeycse@gmail.com" }]
+license = { text = "Apache-2.0" }
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Security :: Cryptography",
+]
+keywords = [
+    "mcp",
+    "model-context-protocol",
+    "post-quantum",
+    "pqc",
+    "ml-kem",
+    "ml-dsa",
+    "ai-agents",
+    "quantum-safe",
+    "fips-203",
+    "fips-204"
+]
+dependencies = []
+
+[project.optional-dependencies]
+fastmcp = ["mcp>=1.0.0"]
+test = ["pytest"]
+
+[project.scripts]
+pqblocks-mcp = "pqblocks_mcp.server:main"
+
+[project.urls]
+Homepage = "https://github.com/PQBlocks/pqblocks-mcp"
+Documentation = "https://pqblocks.github.io"
+Repository = "https://github.com/PQBlocks/pqblocks-mcp.git"
+Issues = "https://github.com/PQBlocks/pqblocks-mcp/issues"
