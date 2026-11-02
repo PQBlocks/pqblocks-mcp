@@ -7,7 +7,7 @@ name = "pqblocks-mcp"
 version = "0.1.0"
 description = "MCP server that tells AI coding agents which PQBlocks package to use, with install lines and quickstarts verified to run."
 readme = "README.md"
-authors = [{ name = "PQBlocks", email = "govinddubeycse@gmail.com" }]
+authors = [{ name = "PQBlocks", email = "engineering@pqblocks.org" }]
 license = { text = "Apache-2.0" }
 requires-python = ">=3.10"
 classifiers = [

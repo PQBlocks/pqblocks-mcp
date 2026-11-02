@@ -72,6 +72,9 @@ _INTENTS = [
     (r"\bagility\b|\bcars\b", "pqblocks-agility"),
     (r"\b(benchmark|time[- ]to[- ]solution|tts)\b", "pqblocks-qubo-bench"),
     (r"\baudit\w*\b.*\b(jwe|jose|tokens?)\b|\b(jwe|jose)\b.*\baudit", "pqblocks-jwe-audit"),
+    (r"\b(?:simulated[- ]bifurcation|bifurcation)\b(?!.*\bsparse\b)", "pqblocks-bifurcation"),
+    (r"\bsparse\b.*\b(?:bifurcation|dsb|qubo|ising)\b", "pqblocks-sparse-bifurcation"),
+    (r"\b(browser|client[- ]side|web|node(?:js)?|express)\b.*\b(verify|verification|chain|certificate|cert|pqc|post[- ]quantum)\b", "pqblocks-browser-pqc-verifier"),
 ]
 
 

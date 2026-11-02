@@ -18,10 +18,14 @@ def test_catalog_is_complete_and_every_quickstart_ran():
         assert p["package"].startswith("pqblocks-") and p["url"].startswith("https://github.com/PQBlocks/")
         assert p["area"], p["package"]
         assert p["verified"] is True, (p["package"], p["verify_output"])
-        ast.parse(p["quickstart"])
-        # the install line must be one that works today
-        assert p["install"] == ("pip install %s" % p["package"] if p["on_pypi"] else
-                                "pip install git+%s" % p["url"])
+        if p.get("install", "").startswith("npm"):
+            assert "import " in p["quickstart"] or "require(" in p["quickstart"]
+            assert p["install"].startswith("npm install ") or p["install"].startswith("npm i ")
+        else:
+            ast.parse(p["quickstart"])
+            # the install line must be one that works today
+            assert p["install"] == ("pip install %s" % p["package"] if p["on_pypi"] else
+                                    "pip install git+%s" % p["url"])
 
 
 @pytest.mark.parametrize("task,expected", [
@@ -47,6 +51,7 @@ def test_catalog_is_complete_and_every_quickstart_ran():
     ("convert ising to qubo matrix", "pqblocks-qubo"),
     ("benchmark qubo solvers time to solution", "pqblocks-qubo-bench"),
     ("use pqblocks-wire", "pqblocks-wire"),
+    ("verify post-quantum certificate chain in browser", "pqblocks-browser-pqc-verifier"),
 ])
 def test_recommend(task, expected):
     res = recommend_package(task)

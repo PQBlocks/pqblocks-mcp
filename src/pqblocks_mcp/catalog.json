@@ -5,11 +5,13 @@
   {
    "package": "pqblocks-core",
    "import": "pqblocks_core",
+   "import_npm": null,
    "version": "0.1.0",
    "repo": "PQBlocks/hybrid-sdk",
    "url": "https://github.com/PQBlocks/hybrid-sdk",
    "area": "PQ cryptography",
    "kind": "pq",
+   "ecosystem": "python",
    "summary": "Post-quantum hybrid cryptography core SDK with C shared libraries and policy enforcement.",
    "intro": [
     "Post-quantum hybrid cryptography core SDK with C shared libraries and policy enforcement.",
@@ -17,13 +19,13 @@
     "Standards implemented: NIST FIPS 203 (ML-KEM), NIST FIPS 204 (ML-DSA), RFC 7748 (X25519), RFC 8032 (Ed25519), RFC 5869 (HKDF), and draft-ietf-lamps-pq-composite-sigs."
    ],
    "keywords": [
-    "post-quantum",
-    "pqc",
-    "hybrid",
-    "ml-kem",
-    "ml-dsa",
     "c-bindings",
-    "crypto-sdk"
+    "crypto-sdk",
+    "hybrid",
+    "ml-dsa",
+    "ml-kem",
+    "post-quantum",
+    "pqc"
    ],
    "topics": [
     "c-bindings",
@@ -41,9 +43,28 @@
    "cli": [],
    "status": "Alpha",
    "on_pypi": null,
+   "on_npm": null,
    "install": "pip install git+https://github.com/PQBlocks/hybrid-sdk",
+   "install_pip": "pip install git+https://github.com/PQBlocks/hybrid-sdk",
+   "install_npm": null,
+   "install_c": "cmake -B build && cmake --build build && sudo cmake --install build",
+   "has_c_sdk": true,
+   "c_headers": [
+    "pqblocks_errors.h",
+    "pqblocks_hsm.h",
+    "pqblocks_kem.h",
+    "pqblocks_policy.h",
+    "pqblocks_sig.h"
+   ],
+   "c_libs": [
+    "libpqblocks_errors.so",
+    "libpqblocks_kem.so",
+    "libpqblocks_policy.so",
+    "libpqblocks_sig.so"
+   ],
    "needs_liboqs": true,
    "quickstart": "import ctypes, os\nimport pqblocks_core\n\n# Locate the native hybrid KEM library\nlib_path = os.path.join(os.path.dirname(pqblocks_core.__file__), \"lib\", \"libpqblocks_kem.so\")\nlib = ctypes.CDLL(lib_path)\nlib.PQBLOCKS_KEM_X25519_MLKEM768_new.restype = ctypes.c_void_p\n\n# Initialize hybrid KEM handle (ML-KEM-768 + X25519)\nkem = lib.PQBLOCKS_KEM_X25519_MLKEM768_new()\nassert kem is not None\nprint(\"PQBlocks hybrid core initialized successfully.\")\n",
+   "quickstart_lang": "python",
    "examples": [
     "01_hybrid_kem_exchange.py",
     "02_hybrid_signature.py"
@@ -73,11 +94,13 @@
   {
    "package": "pqblocks-files",
    "import": "pqblocks_files",
+   "import_npm": null,
    "version": "0.1.0",
    "repo": "PQBlocks/hybrid-file-encryption",
    "url": "https://github.com/PQBlocks/hybrid-file-encryption",
    "area": "PQ cryptography",
    "kind": "pq",
+   "ecosystem": "python",
    "summary": "Hybrid post-quantum file encryption: ML-KEM-768 plus X25519 key encapsulation with chunked ChaCha20-Poly1305 in the pfsh v1 format.",
    "intro": [
     "Hybrid post-quantum file encryption for Python and the command line: ML-KEM-768 plus X25519 key encapsulation, with the payload sealed in 64 KiB ChaCha20-Poly1305 chunks (the `pfsh` v1 file format).",
@@ -85,13 +108,13 @@
     "Implements NIST FIPS 203 (ML-KEM-768, via liboqs), RFC 7748 (X25519), RFC 8439 (ChaCha20-Poly1305) and RFC 5869 (HKDF). **Not FIPS or CMVP validated. Pre-1.0: not independently audited.**"
    ],
    "keywords": [
-    "post-quantum",
-    "ml-kem",
-    "x25519",
-    "hybrid",
-    "file-encryption",
     "chacha20-poly1305",
-    "kem"
+    "file-encryption",
+    "hybrid",
+    "kem",
+    "ml-kem",
+    "post-quantum",
+    "x25519"
    ],
    "topics": [
     "chacha20-poly1305",
@@ -110,10 +133,18 @@
     "pqblocks-files"
    ],
    "status": "Alpha",
-   "on_pypi": null,
-   "install": "pip install git+https://github.com/PQBlocks/hybrid-file-encryption",
+   "on_pypi": "0.1.0",
+   "on_npm": null,
+   "install": "pip install pqblocks-files",
+   "install_pip": "pip install pqblocks-files",
+   "install_npm": null,
+   "install_c": null,
+   "has_c_sdk": false,
+   "c_headers": [],
+   "c_libs": [],
    "needs_liboqs": true,
    "quickstart": "from pqblocks_files.encrypt import encrypt, decrypt\nfrom pqblocks_files.keys import keygen\n\nkeypair = keygen()                                    # ML-KEM-768 + X25519\nblob = encrypt(b\"quarterly numbers\", [keypair.public])  # fresh random file key every call\nassert decrypt(blob, keypair) == b\"quarterly numbers\"   # refuses classical-only files by default\n",
+   "quickstart_lang": "python",
    "examples": [
     "key_files_and_policy.py",
     "quickstart.py"
@@ -142,26 +173,106 @@
    "verified": true
   },
   {
+   "package": "pqblocks-fips-dualmode",
+   "import": "pqblocks_fips_dualmode",
+   "import_npm": null,
+   "version": "0.1.0",
+   "repo": "PQBlocks/fips-dualmode",
+   "url": "https://github.com/PQBlocks/fips-dualmode",
+   "area": "PQ cryptography",
+   "kind": "pq",
+   "ecosystem": "python",
+   "summary": "Dual-mode cryptographic abstraction switching between FIPS 140-3 classical crypto (ECDH/AES-GCM) and post-quantum crypto (ML-KEM/ML-DSA).",
+   "intro": [
+    "A unified dual-mode cryptographic abstraction providing seamless switching between classical FIPS 140-3 approved algorithms and modern post-quantum cryptography."
+   ],
+   "keywords": [
+    "aes-gcm",
+    "dual-mode",
+    "ecdh",
+    "fips-140-3",
+    "ml-dsa",
+    "ml-kem",
+    "post-quantum",
+    "pqc"
+   ],
+   "topics": [
+    "aes-gcm",
+    "dual-mode",
+    "ecdh",
+    "fips-140-3",
+    "ml-dsa",
+    "ml-kem",
+    "post-quantum",
+    "pqblocks",
+    "pqc",
+    "python"
+   ],
+   "python": ">=3.11",
+   "cli": [],
+   "status": "Alpha",
+   "on_pypi": null,
+   "on_npm": null,
+   "install": "pip install git+https://github.com/PQBlocks/fips-dualmode",
+   "install_pip": "pip install git+https://github.com/PQBlocks/fips-dualmode",
+   "install_npm": null,
+   "install_c": null,
+   "has_c_sdk": false,
+   "c_headers": [],
+   "c_libs": [],
+   "needs_liboqs": true,
+   "quickstart": "from pqblocks_fips_dualmode import CryptoEnvelope\n\n# Initialize classical FIPS mode\nenv = CryptoEnvelope(mode=\"fips\")\n\n# Generate an ECDH P-256 keypair\nkey = env.generate_key()\n\n# Encrypt sensitive payload using AES-256-GCM\nplaintext = b\"Sensitive transactional payload data\"\naad = b\"tenant-id=1084;classification=restricted\"\nenvelope = env.encrypt(key, plaintext, associated_data=aad)\n\n# Decrypt and verify ciphertext and authentication tag\ndecrypted = env.decrypt(key, envelope)\nassert decrypted == plaintext\nprint(\"FIPS Mode decryption successful!\")\n",
+   "quickstart_lang": "python",
+   "examples": [
+    "01_fips_encryption.py",
+    "02_pqc_signatures.py"
+   ],
+   "docs": {
+    "README.md": "https://github.com/PQBlocks/fips-dualmode/blob/main/README.md",
+    "AGENTS.md": "https://github.com/PQBlocks/fips-dualmode/blob/main/AGENTS.md",
+    "SECURITY_NOTES.md": "https://github.com/PQBlocks/fips-dualmode/blob/main/SECURITY_NOTES.md",
+    "TESTING.md": "https://github.com/PQBlocks/fips-dualmode/blob/main/TESTING.md",
+    "BENCHMARKS.md": "https://github.com/PQBlocks/fips-dualmode/blob/main/BENCHMARKS.md",
+    "EVIDENCE.md": "https://github.com/PQBlocks/fips-dualmode/blob/main/EVIDENCE.md",
+    "VERIFICATION_REPORT.md": "https://github.com/PQBlocks/fips-dualmode/blob/main/VERIFICATION_REPORT.md",
+    "USE_CASES.md": "https://github.com/PQBlocks/fips-dualmode/blob/main/USE_CASES.md",
+    "CHANGELOG.md": "https://github.com/PQBlocks/fips-dualmode/blob/main/CHANGELOG.md"
+   },
+   "sections": [
+    "Why PQBlocks Dual-Mode",
+    "Installation",
+    "Usage",
+    "API Reference",
+    "Limitations",
+    "Security Considerations",
+    "Verification",
+    "Part of PQBlocks"
+   ],
+   "verified": true
+  },
+  {
    "package": "pqblocks-jose",
    "import": "pqblocks_jose",
+   "import_npm": null,
    "version": "0.1.0",
    "repo": "PQBlocks/hybrid-jose",
    "url": "https://github.com/PQBlocks/hybrid-jose",
    "area": "PQ cryptography",
    "kind": "pq",
+   "ecosystem": "python",
    "summary": "Post-quantum hybrid JOSE library supporting ML-KEM and ML-DSA JWE and JWS tokens.",
    "intro": [
     "Post-quantum hybrid JOSE (Javascript Object Signing and Encryption) library providing hybrid JWS (JSON Web Signature) and hybrid JWE (JSON Web Encryption) tokens.",
     "`pqblocks-jose` combines NIST post-quantum primitives (FIPS 203 ML-KEM-768 and FIPS 204 ML-DSA-65) with classical counterparts (X25519, Ed25519) to ensure security against both quantum and classical adversaries without compromising backwards security."
    ],
    "keywords": [
-    "post-quantum",
-    "pqc",
     "hybrid",
     "jose",
     "jwe",
     "jws",
-    "jwt"
+    "jwt",
+    "post-quantum",
+    "pqc"
    ],
    "topics": [
     "hybrid",
@@ -180,10 +291,18 @@
     "pqblocks-jose"
    ],
    "status": "Alpha",
-   "on_pypi": null,
-   "install": "pip install git+https://github.com/PQBlocks/hybrid-jose",
+   "on_pypi": "0.1.0",
+   "on_npm": null,
+   "install": "pip install pqblocks-jose",
+   "install_pip": "pip install pqblocks-jose",
+   "install_npm": null,
+   "install_c": null,
+   "has_c_sdk": false,
+   "c_headers": [],
+   "c_libs": [],
    "needs_liboqs": true,
    "quickstart": "from pqblocks_jose import Policy, generate_keypair, encode_jws, decode_jws, encrypt_jwe, decrypt_jwe\n\n# 1. Define an enforceable policy\npolicy = Policy(\n    version=1,\n    kem=\"X25519+MLKEM768\",           # Hybrid KEM for JWE\n    sig=\"MLDSA65+Ed25519\",           # Hybrid signature for JWS\n    kdf=\"HKDF-SHA256\",               # Mandatory KDF enforcement\n    max_token_bytes=8192,            # Header-safe limit\n    kdf_info=\"JOSE_PostQuantum_Traditional_Hybrid X25519MLKEM768\",\n    sig_alg_std=\"ML-DSA-65-Ed25519\"\n)\n\n# 2. Generate hybrid keypairs\nsign_keypair = generate_keypair(\"ML-DSA-65-Ed25519\", seed=12345)\nenc_keypair = generate_keypair(\"X25519+MLKEM768\", seed=12345)\n\n# 3. Sign & verify a JWS token\npayload = {\"sub\": \"alice@example.com\", \"iat\": 1700000000, \"aud\": \"api.internal\"}\njws_result = encode_jws(payload, policy, private_key=sign_keypair.private_key)\n\n# Verify with public key\nverification = decode_jws(\n    token=jws_result.compact_serialization,\n    policy=policy,\n    public_key=sign_keypair.public_key\n)\nprint(f\"JWS verified: {verification.signature_verified}\")\nprint(f\"JWS token size: {len(jws_result.compact_serialization)} bytes\")\n\n# 4. Encrypt & decrypt a JWE token\nplaintext = b\"session_key:random123nonce\"\njwe_result = encrypt_jwe(plaintext, policy, public_key=enc_keypair.public_key)\n\n# Decrypt with private key\ndecryption = decrypt_jwe(\n    token=jwe_result.compact_serialization,\n    policy=policy,\n    private_key=enc_keypair.private_key\n)\nprint(f\"JWE decrypted matches: {decryption.plaintext == plaintext}\")\n",
+   "quickstart_lang": "python",
    "examples": [
     "quickstart.py",
     "roundtrip.py"
@@ -212,26 +331,28 @@
   {
    "package": "pqblocks-primitives",
    "import": "pqblocks_primitives",
+   "import_npm": null,
    "version": "0.1.0",
    "repo": "PQBlocks/fips-pqc-primitives",
    "url": "https://github.com/PQBlocks/fips-pqc-primitives",
    "area": "PQ cryptography",
    "kind": "pq",
+   "ecosystem": "python",
    "summary": "Production-ready integrated post-quantum cryptographic primitives (ML-KEM, ML-DSA, SLH-DSA, and hybrid schemes).",
    "intro": [
     "Production-ready integrated post-quantum cryptographic primitives (ML-KEM, ML-DSA, SLH-DSA, and hybrid schemes)."
    ],
    "keywords": [
-    "pqc",
-    "post-quantum",
+    "cryptography",
     "fips-203",
     "fips-204",
     "fips-205",
-    "ml-kem",
-    "ml-dsa",
-    "slh-dsa",
     "liboqs",
-    "cryptography"
+    "ml-dsa",
+    "ml-kem",
+    "post-quantum",
+    "pqc",
+    "slh-dsa"
    ],
    "topics": [
     "cryptography",
@@ -251,10 +372,18 @@
    "python": ">=3.11",
    "cli": [],
    "status": "Alpha",
-   "on_pypi": null,
-   "install": "pip install git+https://github.com/PQBlocks/fips-pqc-primitives",
+   "on_pypi": "0.1.0",
+   "on_npm": null,
+   "install": "pip install pqblocks-primitives",
+   "install_pip": "pip install pqblocks-primitives",
+   "install_npm": null,
+   "install_c": null,
+   "has_c_sdk": false,
+   "c_headers": [],
+   "c_libs": [],
    "needs_liboqs": true,
    "quickstart": "from pqblocks_primitives import kem_keygen, kem_encaps, kem_decaps\n\n# Generate ML-KEM-768 keypair\npk, sk = kem_keygen(\"768\")\n\n# Encapsulate shared secret\nct, shared_secret_sender = kem_encaps(pk, \"768\")\n\n# Decapsulate shared secret\nshared_secret_receiver = kem_decaps(sk, ct, \"768\")\n\nassert shared_secret_sender == shared_secret_receiver\n",
+   "quickstart_lang": "python",
    "examples": [
     "02_hybrid_kem_and_slhdsa.py",
     "quickstart.py"
@@ -283,11 +412,13 @@
   {
    "package": "pqblocks-agility",
    "import": "pqblocks_agility",
+   "import_npm": null,
    "version": "0.1.0",
    "repo": "PQBlocks/crypto-agility",
    "url": "https://github.com/PQBlocks/crypto-agility",
    "area": "Migration & readiness",
    "kind": "pq",
+   "ecosystem": "python",
    "summary": "Cryptographic Agility Readiness Scoring (CARS) and CI/CD regression firewall for CycloneDX 1.6 CBOM inventories.",
    "intro": [
     "Computes Cryptographic Agility Readiness Scores (CARS) and acts as a CI/CD regression firewall for CycloneDX 1.6 Cryptographic Bills of Materials (CBOM).",
@@ -295,14 +426,14 @@
     "Implements the 5-dimension CARS model (Costa, IACR ePrint 2026/1467) and OASIS SARIF 2.1.0 telemetry export."
    ],
    "keywords": [
-    "cbom",
     "cars",
+    "cbom",
+    "ci-gate",
     "crypto-agility",
     "cyclonedx",
-    "sarif",
-    "ci-gate",
     "post-quantum",
-    "pqc"
+    "pqc",
+    "sarif"
    ],
    "topics": [
     "cars",
@@ -323,9 +454,17 @@
    ],
    "status": "Alpha",
    "on_pypi": "0.1.0",
+   "on_npm": null,
    "install": "pip install pqblocks-agility",
+   "install_pip": "pip install pqblocks-agility",
+   "install_npm": null,
+   "install_c": null,
+   "has_c_sdk": false,
+   "c_headers": [],
+   "c_libs": [],
    "needs_liboqs": false,
    "quickstart": "import json\nfrom pqblocks_agility.cbom import parse_cbom_dict\nfrom pqblocks_agility.cli import compute_cars_score\n\ncbom_data = {\n    \"bomFormat\": \"CycloneDX\", \"specVersion\": \"1.6\",\n    \"serialNumber\": \"urn:uuid:6c361972-23c3-4d4b-9721-a47fa266184a\", \"version\": 1,\n    \"components\": [{\"type\": \"cryptographic-asset\", \"name\": \"ML-KEM-768\",\n                    \"properties\": [{\"name\": \"pqblocks-scan.algorithm\", \"value\": \"ML-KEM-768\"},\n                                   {\"name\": \"pqblocks-scan.grade\", \"value\": \"A\"}]}]\n}\nscore, dims = compute_cars_score(parse_cbom_dict(cbom_data))\nprint(f\"CARS score: {score:.1f} / 100.0 (Grade A)\")\n",
+   "quickstart_lang": "python",
    "examples": [
     "ci_regression_gate.py",
     "evaluate_cbom.py"
@@ -356,24 +495,26 @@
   {
    "package": "pqblocks-cbom",
    "import": "pqblocks_cbom",
+   "import_npm": null,
    "version": "0.1.0",
    "repo": "PQBlocks/cbom-enricher",
    "url": "https://github.com/PQBlocks/cbom-enricher",
    "area": "Migration & readiness",
    "kind": "pq",
+   "ecosystem": "python",
    "summary": "CycloneDX 1.5 CBOM metadata enrichment engine injecting quantum-safe classifications and CNSA 2.0 compliance properties.",
    "intro": [
     "High-throughput CycloneDX 1.5 CBOM metadata enrichment engine injecting quantum-safe classifications and CNSA 2.0 compliance properties."
    ],
    "keywords": [
     "cbom",
-    "cyclonedx",
-    "sbom",
     "cnsa",
+    "compliance",
+    "cyclonedx",
+    "enricher",
     "post-quantum",
     "pqc",
-    "enricher",
-    "compliance"
+    "sbom"
    ],
    "topics": [
     "cbom",
@@ -393,10 +534,18 @@
     "pqblocks-cbom"
    ],
    "status": "Alpha",
-   "on_pypi": null,
-   "install": "pip install git+https://github.com/PQBlocks/cbom-enricher",
+   "on_pypi": "0.1.0",
+   "on_npm": null,
+   "install": "pip install pqblocks-cbom",
+   "install_pip": "pip install pqblocks-cbom",
+   "install_npm": null,
+   "install_c": null,
+   "has_c_sdk": false,
+   "c_headers": [],
+   "c_libs": [],
    "needs_liboqs": true,
    "quickstart": "from pqblocks_cbom import CBOMEnricher, CBOMProfile\n\n# Initialize enricher with NSA CNSA 2.0 profile\nenricher = CBOMEnricher(CBOMProfile.CNSA20)\n\nsbom = {\n    \"bomFormat\": \"CycloneDX\",\n    \"specVersion\": \"1.5\",\n    \"version\": 1,\n    \"components\": [\n        {\"type\": \"library\", \"name\": \"liboqs\", \"version\": \"3.5.7\"}\n    ]\n}\n\ncbom = enricher.enrich_sbom(sbom)\nprint(\"Enriched components:\", len(cbom[\"components\"]))\nprint(\"Injected properties:\", [p[\"name\"] for p in cbom[\"components\"][0][\"properties\"]])\n",
+   "quickstart_lang": "python",
    "examples": [
     "02_sbom_enrich_and_attest.py",
     "quickstart.py"
@@ -425,24 +574,26 @@
   {
    "package": "pqblocks-cnsa-evidence",
    "import": "pqblocks_cnsa_evidence",
+   "import_npm": null,
    "version": "0.1.0",
    "repo": "PQBlocks/cnsa-evidence-pack",
    "url": "https://github.com/PQBlocks/cnsa-evidence-pack",
    "area": "Migration & readiness",
    "kind": "pq",
+   "ecosystem": "python",
    "summary": "CNSA 2.0 evidence pack generator for quantum-safe compliance, CBOM generation, and migration scheduling.",
    "intro": [
     "CNSA 2.0 Procurement Evidence Pack Generator for federal contractors and enterprise systems transitioning to post-quantum cryptography.",
     "`pqblocks-cnsa-evidence` parses cryptographic bill of materials (CBOM) scan results and multi-ecosystem build lockfiles to synthesize a formal, audit-ready evidence pack meeting US National Security Agency (NSA) Commercial National Security Algorithm Suite 2.0 (CNSA 2.0) compliance requirements."
    ],
    "keywords": [
-    "post-quantum",
-    "pqc",
+    "cbom",
     "cnsa",
     "cnsa-2.0",
-    "cbom",
     "compliance",
-    "migration"
+    "migration",
+    "post-quantum",
+    "pqc"
    ],
    "topics": [
     "cbom",
@@ -459,10 +610,18 @@
    "python": ">=3.11",
    "cli": [],
    "status": "Alpha",
-   "on_pypi": null,
-   "install": "pip install git+https://github.com/PQBlocks/cnsa-evidence-pack",
+   "on_pypi": "0.1.0",
+   "on_npm": null,
+   "install": "pip install pqblocks-cnsa-evidence",
+   "install_pip": "pip install pqblocks-cnsa-evidence",
+   "install_npm": null,
+   "install_c": null,
+   "has_c_sdk": false,
+   "c_headers": [],
+   "c_libs": [],
    "needs_liboqs": false,
    "quickstart": "import hashlib\nimport json\nfrom pqblocks_cnsa_evidence import (\n    scan_parser,\n    lockfile_parser,\n    sbom_emitter,\n    crypto_inventory_emitter,\n    compliance_matrix_emitter,\n    narrative_emitter,\n    migration_scheduler,\n    executive_summary_emitter,\n    attestation_emitter,\n)\n\n# 1. Ingest scan findings and lockfile\nscan_data = {\n    \"algorithms\": [\n        {\"name\": \"ML-KEM-1024\", \"type\": \"key-encapsulation\", \"mode\": \"PQC\", \"keySize\": 1024, \"cnsA20Grade\": \"A\", \"breakYear\": 2040},\n        {\"name\": \"RSA-2048\", \"type\": \"signature\", \"mode\": \"classical\", \"keySize\": 2048, \"cnsA20Grade\": \"D\", \"breakYear\": 2030},\n        {\"name\": \"AES-256\", \"type\": \"encryption\", \"mode\": \"classical\", \"keySize\": 256, \"cnsA20Grade\": \"A\", \"breakYear\": 2050},\n    ],\n    \"tls_endpoints\": [{\"host\": \"api.fed.gov\", \"cipher\": \"TLS_AES_256_GCM_SHA384\"}],\n    \"dependencies\": [{\"name\": \"cryptography\", \"version\": \"42.0.5\"}],\n    \"pqc_grades\": {\"ML-KEM-1024\": \"A\", \"RSA-2048\": \"D\", \"AES-256\": \"A\"}\n}\nlockfile_content = \"cryptography==42.0.5\\nrequests>=2.31.0\\n\"\n\nscan_res = scan_parser(scan_data)\nlock_res = lockfile_parser(\"python\", lockfile_content)\n\n# 2. Synthesize evidence pack components\nsbom = sbom_emitter(scan_res, lock_res)\ninventory = crypto_inventory_emitter(scan_res, lock_res)\nmatrix = compliance_matrix_emitter(scan_res)\nnarrative = narrative_emitter(scan_res, lock_res)\nschedule = migration_scheduler(lock_res, matrix)\nexec_summary = executive_summary_emitter(matrix, narrative, schedule)\n\ndef sha256(val):\n    b = val.encode(\"utf-8\") if isinstance(val, str) else json.dumps(val, sort_keys=True).encode(\"utf-8\")\n    return hashlib.sha256(b).hexdigest()\n\n# 3. Create cryptographic attestation\nattestation = attestation_emitter(\n    sbom_sha256=sha256(sbom),\n    inventory_sha256=sha256(inventory),\n    narrative_sha256=sha256(narrative),\n    compliance_sha256=sha256(matrix),\n    migration_plan_sha256=sha256(schedule),\n    executive_summary_sha256=sha256(exec_summary),\n    tool_version=\"0.1.0\",\n    tool_timestamp=\"2026-10-26T00:00:00Z\",\n    scan_json_sha256=sha256(scan_data),\n    lockfile_hashes={\"requirements.txt\": sha256(lockfile_content)},\n)\n\nprint(f\"Evidence Pack Generated: {sbom['bomFormat']} {sbom['specVersion']}\")\nprint(f\"Compliance Status: {matrix.get('status', 'complete')}\")\n",
+   "quickstart_lang": "python",
    "examples": [
     "01_build_evidence_pack.py",
     "02_compliance_assessment.py"
@@ -491,25 +650,27 @@
   {
    "package": "pqblocks-jwe-audit",
    "import": "pqblocks_jwe_audit",
+   "import_npm": null,
    "version": "0.1.0",
    "repo": "PQBlocks/jwe-policy-auditor",
    "url": "https://github.com/PQBlocks/jwe-policy-auditor",
    "area": "Migration & readiness",
    "kind": "pq",
+   "ecosystem": "python",
    "summary": "High-throughput JSON Web Encryption (JWE) cryptographic policy auditor enforcing CNSA 2.0 and NIST FIPS 203 PQC standards.",
    "intro": [
     "High-throughput JSON Web Encryption (JWE) cryptographic policy auditor enforcing CNSA 2.0 and NIST FIPS 203 PQC standards."
    ],
    "keywords": [
-    "post-quantum",
-    "pqc",
-    "jwe",
-    "jose",
-    "jwt",
-    "cnsa",
-    "fips-203",
     "audit",
-    "compliance"
+    "cnsa",
+    "compliance",
+    "fips-203",
+    "jose",
+    "jwe",
+    "jwt",
+    "post-quantum",
+    "pqc"
    ],
    "topics": [
     "audit",
@@ -528,10 +689,18 @@
    "python": ">=3.11",
    "cli": [],
    "status": "Alpha",
-   "on_pypi": null,
-   "install": "pip install git+https://github.com/PQBlocks/jwe-policy-auditor",
+   "on_pypi": "0.1.0",
+   "on_npm": null,
+   "install": "pip install pqblocks-jwe-audit",
+   "install_pip": "pip install pqblocks-jwe-audit",
+   "install_npm": null,
+   "install_c": null,
+   "has_c_sdk": false,
+   "c_headers": [],
+   "c_libs": [],
    "needs_liboqs": false,
    "quickstart": "from pqblocks_jwe_audit import audit_jwe, ComplianceStandard\n\n# Inspect an incoming JWE compact token\njwe_token = \"eyJhbGciOiJSU0EtT0FFUC0yNTYiLCJlbmMiOiJBMjU2R0NNIn0.dummy_key.dummy_iv.dummy_ct.dummy_tag\"\n\nresult = audit_jwe(jwe_token, standards=[ComplianceStandard.CNSA_2_0])\n\nprint(f\"Compliant: {result.compliant}\")\nprint(f\"Flagged Algorithms: {result.flagged_algorithms}\")\n# Compliant: False\n# Flagged Algorithms: ['RSA-OAEP-256']\n",
+   "quickstart_lang": "python",
    "examples": [
     "02_gateway_policy_audit.py",
     "quickstart.py"
@@ -560,11 +729,13 @@
   {
    "package": "pqblocks-lint",
    "import": "pqblocks_lint",
+   "import_npm": null,
    "version": "0.1.0",
    "repo": "PQBlocks/pqc-lint",
    "url": "https://github.com/PQBlocks/pqc-lint",
    "area": "Migration & readiness",
    "kind": "pq",
+   "ecosystem": "python",
    "summary": "Static analysis for Python source that finds classical and post-quantum cryptographic primitives with a source-to-sink taint pass and reports them as a CycloneDX 1.6 CBOM or a SARIF 2.1.0 log.",
    "intro": [
     "Static analysis for Python source that finds cryptographic primitives and says which ones a quantum computer would break (RSA, ECDSA/ECC, X25519) and which it would not (ML-KEM, AES-256, HKDF).",
@@ -574,12 +745,12 @@
    ],
    "keywords": [
     "cbom",
+    "cryptography-inventory",
     "cyclonedx",
-    "sarif",
-    "static-analysis",
     "post-quantum",
     "pqc",
-    "cryptography-inventory",
+    "sarif",
+    "static-analysis",
     "taint-analysis"
    ],
    "topics": [
@@ -600,10 +771,18 @@
     "pqblocks-lint"
    ],
    "status": "Alpha",
-   "on_pypi": null,
-   "install": "pip install git+https://github.com/PQBlocks/pqc-lint",
+   "on_pypi": "0.1.0",
+   "on_npm": null,
+   "install": "pip install pqblocks-lint",
+   "install_pip": "pip install pqblocks-lint",
+   "install_npm": null,
+   "install_c": null,
+   "has_c_sdk": false,
+   "c_headers": [],
+   "c_libs": [],
    "needs_liboqs": true,
    "quickstart": "import pathlib, tempfile\nfrom pqblocks_lint import cli\n\nsrc = pathlib.Path(tempfile.mkdtemp(), \"keys.py\")\nsrc.write_text(\"from cryptography.hazmat.primitives.asymmetric import rsa\\n\"\n               \"def make_key():\\n\"\n               \"    key = rsa.generate_private_key(public_exponent=65537, key_size=2048)\\n\"\n               \"    return key\\n\")\ncode = cli.main([\"--target\", str(src), \"--format\", \"cbom\", \"--output\", str(src.with_suffix(\".cbom.json\")), \"--seed\", \"0\"])\nprint(code)   # 1: quantum-vulnerable cryptography found (RSA-2048)\n",
+   "quickstart_lang": "python",
    "examples": [
     "library_pipeline.py",
     "sarif_report.py",
@@ -634,23 +813,25 @@
   {
    "package": "pqblocks-policy",
    "import": "pqblocks_policy",
+   "import_npm": null,
    "version": "0.1.0",
    "repo": "PQBlocks/crypto-policy-engine",
    "url": "https://github.com/PQBlocks/crypto-policy-engine",
    "area": "Migration & readiness",
    "kind": "pq",
+   "ecosystem": "python",
    "summary": "Policy-as-code engine for post-quantum cryptography compliance and CBOM verification.",
    "intro": [
     "Policy-as-code engine for evaluating cryptographic posture, post-quantum compliance, and cryptographic bill of materials (CBOM) conformance.",
     "`pqblocks-policy` allows organizations to define, enforce, and audit cryptographic governance rules across systems, APIs, TLS endpoints, and software dependencies against modern post-quantum standards including NIST FIPS 203/204/205 and NSA CNSA 2.0."
    ],
    "keywords": [
-    "post-quantum",
-    "pqc",
-    "policy",
-    "compliance",
+    "cbom",
     "cnsa",
-    "cbom"
+    "compliance",
+    "policy",
+    "post-quantum",
+    "pqc"
    ],
    "topics": [
     "cbom",
@@ -668,10 +849,18 @@
     "pqblocks-policy"
    ],
    "status": "Alpha",
-   "on_pypi": null,
-   "install": "pip install git+https://github.com/PQBlocks/crypto-policy-engine",
+   "on_pypi": "0.1.0",
+   "on_npm": null,
+   "install": "pip install pqblocks-policy",
+   "install_pip": "pip install pqblocks-policy",
+   "install_npm": null,
+   "install_c": null,
+   "has_c_sdk": false,
+   "c_headers": [],
+   "c_libs": [],
    "needs_liboqs": false,
    "quickstart": "from pqblocks_policy import PolicyEngine, cnsa20_default, Asset, UsageClass\n\n# 1. Load the default CNSA 2.0 profile\nprofile = cnsa20_default()\nengine = PolicyEngine(profile)\n\n# 2. Define a cryptographic asset to evaluate\nasset = Asset(ref=\"tls-session-1\", alg=\"ML-KEM-768+X25519\", use=UsageClass.KEY_EXCHANGE)\n\n# 3. Evaluate compliance\nreport = engine.evaluate([asset])\nprint(f\"Verdict: {report.verdict.value} | Assets: {report.asset_count} | Violations: {report.violation_count}\")\n",
+   "quickstart_lang": "python",
    "examples": [
     "02_cbom_policy_audit.py",
     "quickstart.py"
@@ -701,11 +890,13 @@
   {
    "package": "pqblocks-scan",
    "import": "pqblocks_scan",
+   "import_npm": null,
    "version": "0.1.0",
    "repo": "PQBlocks/cbom-scanner",
    "url": "https://github.com/PQBlocks/cbom-scanner",
    "area": "Migration & readiness",
    "kind": "pq",
+   "ecosystem": "python",
    "summary": "Cryptography inventory scanner: finds classical and post-quantum algorithms in source code or a TLS endpoint and writes a CycloneDX 1.6 CBOM, a SARIF 2.1.0 report and a readiness grade.",
    "intro": [
     "Cryptography inventory scanner for the post-quantum transition. It finds classical and post-quantum algorithms in source code (Python by syntax tree, other languages by pattern) and in a live TLS endpoint's negotiated cipher suite. It then writes a **CycloneDX 1.6** CBOM (Cryptography Bill of Materials), a **SARIF 2.1.0** report and an A–F readiness grade.",
@@ -715,12 +906,12 @@
    ],
    "keywords": [
     "cbom",
+    "cnsa-2.0",
+    "crypto-inventory",
     "cyclonedx",
-    "sarif",
     "post-quantum",
     "pqc",
-    "crypto-inventory",
-    "cnsa-2.0",
+    "sarif",
     "scanner"
    ],
    "topics": [
@@ -741,10 +932,18 @@
     "pqblocks-scan"
    ],
    "status": "Alpha",
-   "on_pypi": null,
-   "install": "pip install git+https://github.com/PQBlocks/cbom-scanner",
+   "on_pypi": "0.1.0",
+   "on_npm": null,
+   "install": "pip install pqblocks-scan",
+   "install_pip": "pip install pqblocks-scan",
+   "install_npm": null,
+   "install_c": null,
+   "has_c_sdk": false,
+   "c_headers": [],
+   "c_libs": [],
    "needs_liboqs": false,
    "quickstart": "from pqblocks_scan.discovery import Discovery\nfrom pqblocks_scan.scorer import CARSScorer\nfrom pqblocks_scan.cbom import CBOMGenerator\n\nsrc = \"import hashlib\\nh = hashlib.sha1(b'x').hexdigest()\\nfrom pqcrypto.kem import ml_kem_768\\n\"\nassets = Discovery().discover_source(src, \"app.py\").assets\nprint([(a.algorithm, a.line_number, a.is_quantum_vulnerable) for a in assets])\n# [('ML-KEM-768', 3, False), ('SHA-1', 2, True)]\ngrade = CARSScorer.evaluate(assets)\nprint(grade.score, grade.letter)                      # 55.5 C\nprint(CBOMGenerator.generate(assets)[\"specVersion\"])  # 1.6\n",
+   "quickstart_lang": "python",
    "examples": [
     "ci_gate.py",
     "quickstart.py",
@@ -775,23 +974,25 @@
   {
    "package": "pqblocks-csr-pop",
    "import": "pqblocks_csr_pop",
+   "import_npm": null,
    "version": "0.1.0",
    "repo": "PQBlocks/mlkem-csr-pop",
    "url": "https://github.com/PQBlocks/mlkem-csr-pop",
    "area": "Interoperability",
    "kind": "pq",
+   "ecosystem": "python",
    "summary": "ML-KEM (FIPS 203) PKCS#10 Certificate Signing Request (CSR) generator with RFC 9883 Proof of Possession (PoP).",
    "intro": [
     "ML-KEM (FIPS 203) PKCS#10 Certificate Signing Request (CSR) generator with RFC 9883 Proof of Possession (PoP)."
    ],
    "keywords": [
+    "csr",
+    "ml-kem",
+    "pkcs10",
     "post-quantum",
     "pqc",
-    "ml-kem",
-    "csr",
-    "pkcs10",
-    "rfc-9883",
-    "proof-of-possession"
+    "proof-of-possession",
+    "rfc-9883"
    ],
    "topics": [
     "csr",
@@ -808,10 +1009,18 @@
    "python": ">=3.11",
    "cli": [],
    "status": "Alpha",
-   "on_pypi": null,
-   "install": "pip install git+https://github.com/PQBlocks/mlkem-csr-pop",
+   "on_pypi": "0.1.0",
+   "on_npm": null,
+   "install": "pip install pqblocks-csr-pop",
+   "install_pip": "pip install pqblocks-csr-pop",
+   "install_npm": null,
+   "install_c": null,
+   "has_c_sdk": false,
+   "c_headers": [],
+   "c_libs": [],
    "needs_liboqs": false,
    "quickstart": "import datetime\nfrom cryptography import x509\nfrom cryptography.hazmat.primitives.asymmetric import ed25519\nfrom cryptography.x509.oid import NameOID\n\nfrom pqblocks_csr_pop.csr_builder import build_csr_with_pop, parse_csr, verify_csr_signature\nfrom pqblocks_csr_pop.mlkem import mlkem_keygen\n\n# 1. Attestor Identity (e.g. Host/Device Ed25519 key)\nattestor_key = ed25519.Ed25519PrivateKey.generate()\nca_name = x509.Name([x509.NameAttribute(NameOID.COMMON_NAME, \"Device Attestor\")])\nnow = datetime.datetime.now(datetime.timezone.utc)\nattestor_cert = (\n    x509.CertificateBuilder()\n    .subject_name(ca_name).issuer_name(ca_name)\n    .public_key(attestor_key.public_key())\n    .serial_number(x509.random_serial_number())\n    .not_valid_before(now - datetime.timedelta(days=1))\n    .not_valid_after(now + datetime.timedelta(days=365))\n    .sign(attestor_key, None)\n)\n\n# 2. Generate ML-KEM Keypair (FIPS 203 ML-KEM-768)\nek, dk = mlkem_keygen(\"ML-KEM-768\")\n\n# 3. Construct PKCS#10 CSR with RFC 9883 PoP Extension\nsubject = x509.Name([x509.NameAttribute(NameOID.COMMON_NAME, \"pqc-server.internal.net\")])\ncsr_der = build_csr_with_pop(ek, \"ML-KEM-768\", subject, attestor_key, attestor_cert)\n\n# 4. CA parses CSR and verifies PoP signature\nparsed = parse_csr(csr_der)\nvalid = verify_csr_signature(csr_der, attestor_cert)\nassert valid\nprint(f\"CSR verified successfully: {len(csr_der)} bytes DER\")\n",
+   "quickstart_lang": "python",
    "examples": [
     "02_mlkem1024_csr_with_pop.py",
     "quickstart.py"
@@ -840,11 +1049,13 @@
   {
    "package": "pqblocks-jwe",
    "import": "pqblocks_jwe",
+   "import_npm": null,
    "version": "0.1.0",
    "repo": "PQBlocks/hybrid-jwe",
    "url": "https://github.com/PQBlocks/hybrid-jwe",
    "area": "Interoperability",
    "kind": "pq",
+   "ecosystem": "python",
    "summary": "Compact five-part wire format, with a serializer and structural parser, for hybrid ML-KEM-768 + X25519 JWE-style tokens; it performs no encryption itself.",
    "intro": [
     "A compact five-part wire format for hybrid post-quantum/classical (ML-KEM-768 + X25519) JWE-style tokens, plus a serializer and a structural parser (it does not validate `alg` or `enc` values). **It does not encrypt anything.**",
@@ -852,15 +1063,15 @@
     "Standards used: base64url (RFC 4648 §5) and JSON (RFC 8259), with a layout modelled on JWE compact serialization (RFC 7516). The layout is **not** RFC 7516 compact serialization, and standard JOSE libraries cannot read it."
    ],
    "keywords": [
-    "jwe",
-    "jose",
-    "post-quantum",
-    "ml-kem",
-    "x25519",
+    "base64url",
     "hybrid",
-    "serialization",
+    "jose",
+    "jwe",
+    "ml-kem",
     "parser",
-    "base64url"
+    "post-quantum",
+    "serialization",
+    "x25519"
    ],
    "topics": [
     "base64url",
@@ -879,10 +1090,18 @@
    "python": ">=3.11",
    "cli": [],
    "status": "Alpha",
-   "on_pypi": null,
-   "install": "pip install git+https://github.com/PQBlocks/hybrid-jwe",
+   "on_pypi": "0.1.0",
+   "on_npm": null,
+   "install": "pip install pqblocks-jwe",
+   "install_pip": "pip install pqblocks-jwe",
+   "install_npm": null,
+   "install_c": null,
+   "has_c_sdk": false,
+   "c_headers": [],
+   "c_libs": [],
    "needs_liboqs": false,
    "quickstart": "from pqblocks_jwe import ALG_HYBRID, ENC_A256GCM, parse_jwe, serialize_jwe\n\nciphertext = bytes(48)        # your AEAD output; this package does not encrypt\nkem_ct = bytes(1088 + 32)     # your ML-KEM-768 ciphertext || X25519 ephemeral public key\nheader = {\"alg\": ALG_HYBRID, \"enc\": ENC_A256GCM, \"kid\": \"recipient-1\"}\n\ntoken = serialize_jwe(ciphertext, header, {\"cty\": \"application/json\"}, b\"settlement-v1\", kem_ct)\nparsed = parse_jwe(token)\nassert parsed[\"header\"][\"alg\"] == ALG_HYBRID   # parse_jwe does not check alg/enc for you\nprint(len(token), parsed[\"aad\"], len(parsed[\"kem_ct\"]))   # 1697 b'settlement-v1' 1120\n",
+   "quickstart_lang": "python",
    "examples": [
     "reject_hostile.py",
     "roundtrip.py"
@@ -912,24 +1131,26 @@
   {
    "package": "pqblocks-tls-interop",
    "import": "pqblocks_tls_interop",
+   "import_npm": null,
    "version": "0.1.0",
    "repo": "PQBlocks/tls-hybrid-interop",
    "url": "https://github.com/PQBlocks/tls-hybrid-interop",
    "area": "Interoperability",
    "kind": "pq",
+   "ecosystem": "python",
    "summary": "TLS 1.3 hybrid key exchange (X25519MLKEM768 / RFC 10024) endpoint probe, downgrade detector, and key material validator.",
    "intro": [
     "TLS 1.3 hybrid key exchange (X25519MLKEM768 / RFC 10024) endpoint probe, downgrade detector, and key material validator."
    ],
    "keywords": [
+    "hybrid",
+    "interop",
+    "ml-kem",
     "post-quantum",
     "pqc",
-    "tls",
-    "hybrid",
     "rfc-10024",
-    "ml-kem",
-    "x25519",
-    "interop"
+    "tls",
+    "x25519"
    ],
    "topics": [
     "hybrid",
@@ -950,9 +1171,17 @@
    ],
    "status": "Alpha",
    "on_pypi": null,
+   "on_npm": null,
    "install": "pip install git+https://github.com/PQBlocks/tls-hybrid-interop",
+   "install_pip": "pip install git+https://github.com/PQBlocks/tls-hybrid-interop",
+   "install_npm": null,
+   "install_c": null,
+   "has_c_sdk": false,
+   "c_headers": [],
+   "c_libs": [],
    "needs_liboqs": false,
    "quickstart": "from pqblocks_tls_interop import derive_shared_secret_10024, derive_key_material_rfc9954\nfrom pqblocks_tls_interop.verifier.probe import HybridGroupProbe\n\n# 1. Inspect RFC 10024 shared secret specifications\nlayout = HybridGroupProbe.get_shared_secret_layout()\nprint(layout[\"group_name\"])  # X25519MLKEM768\nprint(layout[\"codepoint\"])   # 4588\n\n# 2. Derive combined hybrid shared secret (64 bytes: 32 bytes ML-KEM || 32 bytes X25519)\nclassical_ss = b\"\\x01\" * 32\nmlkem_ss = b\"\\x02\" * 32\ncombined = derive_shared_secret_10024(classical_ss, mlkem_ss)\nassert combined == mlkem_ss + classical_ss\n\n# 3. Derive key material per RFC 9954 (48-byte SHA-384 digest)\nkm = derive_key_material_rfc9954(classical_ss, mlkem_ss)\nassert len(km) == 48\n\n# 4. Probe an external endpoint\nprobe = HybridGroupProbe(\"example.com\", port=443, timeout=5.0)\nresult = probe.probe(sni=\"example.com\")\nif result.downgrade_detected:\n    print(f\"Warning: Endpoint downgraded to classical ({result.error_reason})\")\n",
+   "quickstart_lang": "python",
    "examples": [
     "02_probe_endpoint.py",
     "quickstart.py"
@@ -981,11 +1210,13 @@
   {
    "package": "pqblocks-wire",
    "import": "pqblocks_wire",
+   "import_npm": null,
    "version": "0.1.0",
    "repo": "PQBlocks/pqc-wireformat",
    "url": "https://github.com/PQBlocks/pqc-wireformat",
    "area": "Interoperability",
    "kind": "pq",
+   "ecosystem": "python",
    "summary": "Length-prefixed container format (PQCWF1) for ML-KEM ciphertexts and ML-DSA / SLH-DSA signatures, with thin wrappers over liboqs-python and pyca/cryptography; it implements no primitive itself.",
    "intro": [
     "A small, length-prefixed binary frame (`PQCWF1`) that carries an ML-KEM ciphertext, an ML-DSA signature, an SLH-DSA signature and a payload, with a strict parser. It also has thin wrappers for ML-KEM / ML-DSA / SLH-DSA key generation, encapsulation and signing, a composite ML-DSA-65 + Ed25519 signature, and an X25519 + ML-KEM-768 hybrid secret.",
@@ -993,15 +1224,15 @@
     "**Standards involved:** the primitives are FIPS 203 (ML-KEM), FIPS 204 (ML-DSA) and FIPS 205 (SLH-DSA). This package does not implement them: it calls **liboqs** through **liboqs-python**. X25519 and Ed25519 come from **pyca/cryptography**. The frame format is this package's own and is not an IETF or NIST format."
    ],
    "keywords": [
-    "post-quantum",
-    "ml-kem",
-    "ml-dsa",
-    "slh-dsa",
-    "wire-format",
-    "serialization",
     "composite-signatures",
     "hybrid-key-exchange",
-    "liboqs"
+    "liboqs",
+    "ml-dsa",
+    "ml-kem",
+    "post-quantum",
+    "serialization",
+    "slh-dsa",
+    "wire-format"
    ],
    "topics": [
     "composite-signatures",
@@ -1021,9 +1252,17 @@
    "cli": [],
    "status": "Alpha",
    "on_pypi": null,
+   "on_npm": null,
    "install": "pip install git+https://github.com/PQBlocks/pqc-wireformat",
+   "install_pip": "pip install git+https://github.com/PQBlocks/pqc-wireformat",
+   "install_npm": null,
+   "install_c": null,
+   "has_c_sdk": false,
+   "c_headers": [],
+   "c_libs": [],
    "needs_liboqs": true,
    "quickstart": "from pqblocks_wire import (generate_mlkem_keypair, encapsulate_mlkem, decapsulate_mlkem,\n                           encode_wire_format, decode_wire_format)\n\npk, sk = generate_mlkem_keypair(\"ML-KEM-768\")\nct, ss_sender = encapsulate_mlkem(pk, \"ML-KEM-768\")\nframe = encode_wire_format(mlkem_ciphertext=ct, payload=b\"hello\")      # 1109 bytes\nreceived = decode_wire_format(frame)\nss_receiver = decapsulate_mlkem(sk, received.mlkem_ciphertext, \"ML-KEM-768\")\nprint(ss_sender == ss_receiver, received.payload)                    # True b'hello'\n",
+   "quickstart_lang": "python",
    "examples": [
     "composite_and_hybrid.py",
     "quickstart.py",
@@ -1055,11 +1294,13 @@
   {
    "package": "pqblocks-acvp",
    "import": "pqblocks_acvp",
+   "import_npm": null,
    "version": "0.1.0",
    "repo": "PQBlocks/acvp-conformance",
    "url": "https://github.com/PQBlocks/acvp-conformance",
    "area": "Conformance",
    "kind": "pq",
+   "ecosystem": "python",
    "summary": "Cross-implementation NIST ACVP conformance harness for FIPS 203 (ML-KEM) and FIPS 204 (ML-DSA).",
    "intro": [
     "NIST ACVP conformance harness for FIPS 203 (ML-KEM) and FIPS 204 (ML-DSA), with a pure-Python reference oracle (kyber-py, dilithium-py) and partial adapters for pyca/cryptography (pure ML-DSA sigVer) and liboqs (ML-KEM decapsulation), plus a Go placeholder.",
@@ -1067,14 +1308,14 @@
     "Standards implemented: NIST ACVP, FIPS 203 (ML-KEM), FIPS 204 (ML-DSA). SLH-DSA (FIPS 205) is not yet covered."
    ],
    "keywords": [
-    "post-quantum",
-    "pqc",
     "acvp",
+    "conformance-testing",
     "fips-203",
     "fips-204",
-    "ml-kem",
     "ml-dsa",
-    "conformance-testing"
+    "ml-kem",
+    "post-quantum",
+    "pqc"
    ],
    "topics": [
     "acvp",
@@ -1093,9 +1334,17 @@
    "cli": [],
    "status": "Alpha",
    "on_pypi": "0.1.0",
+   "on_npm": null,
    "install": "pip install pqblocks-acvp",
+   "install_pip": "pip install pqblocks-acvp",
+   "install_npm": null,
+   "install_c": null,
+   "has_c_sdk": false,
+   "c_headers": [],
+   "c_libs": [],
    "needs_liboqs": true,
    "quickstart": "from pqblocks_acvp.runner import build_golden_session\nfrom pqblocks_acvp.harness import ConformanceHarness\nfrom pqblocks_acvp.adapters.reference import ReferencePQCAdapter\n\nsession = build_golden_session()\nharness = ConformanceHarness([ReferencePQCAdapter()])\nreports = harness.run_session(session)\nrep = reports[\"Reference-FIPS-Oracle\"]\nprint(f\"Executed {rep.total_attempted} cases: {rep.passed} passed (denominator verified: {rep.denominator_verified})\")\n",
+   "quickstart_lang": "python",
    "examples": [
     "custom_adapter.py",
     "evaluate_session.py"
@@ -1124,26 +1373,108 @@
    "verified": true
   },
   {
+   "package": "pqblocks-browser-pqc-verifier",
+   "import": "@pqblocks/browser-pqc-verifier",
+   "import_npm": "@pqblocks/browser-pqc-verifier",
+   "version": "0.1.0",
+   "repo": "PQBlocks/browser-pqc-verifier",
+   "url": "https://github.com/PQBlocks/browser-pqc-verifier",
+   "area": "Conformance",
+   "kind": "pq",
+   "ecosystem": "npm",
+   "summary": "Post-quantum certificate and chain verifier for browsers and Node.js using ML-DSA/SLH-DSA from @noble/post-quantum.",
+   "intro": [
+    "A high-performance post-quantum X.509 certificate and chain verification library designed for browser environments and Node.js runtimes."
+   ],
+   "keywords": [
+    "certificate",
+    "chain",
+    "ml-dsa",
+    "post-quantum",
+    "pqc",
+    "slh-dsa",
+    "verification"
+   ],
+   "topics": [
+    "certificate",
+    "chain",
+    "javascript",
+    "ml-dsa",
+    "post-quantum",
+    "pqblocks",
+    "pqc",
+    "slh-dsa",
+    "verification",
+    "pq-conformance",
+    "pq-crypto"
+   ],
+   "python": null,
+   "cli": [
+    "pqblocks-browser-verify"
+   ],
+   "status": "alpha",
+   "on_pypi": null,
+   "on_npm": null,
+   "install": "npm install git+https://github.com/PQBlocks/browser-pqc-verifier",
+   "install_pip": null,
+   "install_npm": "npm install git+https://github.com/PQBlocks/browser-pqc-verifier",
+   "install_c": null,
+   "has_c_sdk": false,
+   "c_headers": [],
+   "c_libs": [],
+   "needs_liboqs": false,
+   "quickstart": "import {\n  verifyPqChain,\n  loadTrustAnchorsFromPem,\n} from '@pqblocks/browser-pqc-verifier';\n\n// Trusted root certificate authority (PEM)\nconst rootPem = `-----BEGIN CERTIFICATE-----\nMIIDfzCCAmegAwIBAgIUaXvyueQOn6KG2FlckWS16jlMDM0wDQYJKoZIhvcNAQEL\nBQAwTzELMAkGA1UEBhMCVVMxFjAUBgNVBAoMDVBRIFNoaWZ0IExhYnMxDTALBgNV\nBAsMBFJvb3QxGTAXBgNVBAMMEFBRIFNoaWZ0IFJvb3QgQ0EwHhcNMjYxMDIxMjAy\nMTM4WhcNMzYxMDE4MjAyMTM4WjBPMQswCQYDVQQGEwJVUzEWMBQGA1UECgwNUFEg\nU2hpZnQgTGFiczENMAsGA1UECwwEUm9vdDEZMBcGA1UEAwwQUFEgU2hpZnQgUm9v\ndCBDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANXktGV5TGFc7P8k\nMf6h0WKnFDYYyuxOgVdtTO/EfrcZk8azHMutQVAB4MjmWGIFZ/DwhazfoML19vfN\nqTaYswix/qqXu/q9vz+A7pjssCBiVcRjhiW5grBoYIxiewrekxWVyYTPTy+U25K7\nCiJapzTHXRq9ZnBFd6NFqisqkf1BM4YUcXRvwnHFKO+U9FN14DfoJb9CnVu5EYf+\nSL+xNy0H/7Nw8WMHufbDwZyX30ljxaUWP92ANQ884Z+Ll5AhPczQ4LejSpxG2FeH\nFWt9oq7af5fTcIvJ0BYrr70YQZVISZOad69inVlGRX766uKz92QvjDI0/n9eCXD2\nXS6rklcCAwEAAaNTMFEwHQYDVR0OBBYEFApW3+CLkmy2FAkfEw4W8ppbQt8AMB8G\nA1UdIwQYMBaAFApW3+CLkmy2FAkfEw4W8ppbQt8AMA8GA1UdEwEB/wQFMAMBAf8w\nDQYJKoZIhvcNAQELBQADggEBAMUWJajst0LhvJNmfw9lcr1VjV1qAZG+viECKu/L\nnUbaRy+fHT455ORUiVg9PuMQlwzDcju0hdl7+Z1ysM+zbl8pupUERa0bbLRfFtqo\n4PaCLZp8NcsK0zj7jqEWagdGBiSnmnpZpThYWTdhhaDUCkESV8KknqirRslWm+F8\ni9vuREduLDYde7GdddAuILpHEOEKtpxVNCM9Hgm6DFqaTKOHsB3R0fmdQayQtVmS\nZNtf40Lc7nEhTZUxMX0vnGBbQGTQ3NQYYdJ0WCfWtmE1V/VpJGkc4apuC2OEeg/6\nstARzsnt45ogfPN8UVWOYuGYw90pdmqSkwt8bxMOqyfnLiM=\n-----END CERTIFICATE-----`;\n\n// Leaf certificate\nconst leafPem = `-----BEGIN CERTIFICATE-----\nMIIDcjCCAlqgAwIBAgIUF6wiL3fubBQoyrb2+Y8r360WxF0wDQYJKoZIhvcNAQEL\nBQAwTzELMAkGA1UEBhMCVVMxFjAUBgNVBAoMDVBRIFNoaWZ0IExhYnMxDTALBgNV\nBAsMBFJvb3QxGTAXBgNVBAMMEFBRIFNoaWZ0IFJvb3QgQ0EwHhcNMjYxMDIxMjAy\nMTM4WhcNMjkwMTIzMjAyMTM4WjBTMQswCQYDVQQGEwJVUzEWMBQGA1UECgwNUFEg\nU2hpZnQgTGFiczEMMAoGA1UECwwDVExTMR4wHAYDVQQDDBVsZWFmMS5wcXNoaWZ0\nLmV4YW1wbGUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQClsu2MWjiQ\nQ/7gXfyjpWXASTVQQnf5Ik4gODDMPrtwGp+lHhrGvPbWs3SGENzZcMuShvs0tW4U\nmSqqlk7DQRIYIFps7pWlhXBhnn8W1YeLzpXsWasRyBcO2u/YTe0v9BFZBUjs7dEF\n4Ug5rjrOMgOH2WYWhkK/odqqYrjoIh7ONG343ezF31kRSKgRzVr2V9J1Ga8nIUUh\n/kjiNwUUV5bRoA/6vKbsCmtAPZlj/qVNKgnidkTAa4JnxpUWtXSJ+wEQ+WRoEheH\n2GrFTAIzVJouUkibD/MkUvG19hOo3N0uNl9gxgB/PaZ1Lb61fEUGFBmGIsfm3NE0\nZGz+VvDaFhnxAgMBAAGjQjBAMB0GA1UdDgQWBBTAcEMqZCmrfd0qrvGXQ4P1tcsE\naDAfBgNVHSMEGDAWgBQKVt/gi5JsthQJHxMOFvKaW0LfADANBgkqhkiG9w0BAQsF\nAAOCAQEAsAweu9CwrUOJPbYU9yGWMcduMscPECcZDIT9NjFedpo9a/aNobbfr2/x\nh2ZOoZEGQRioivRslDNh2gR/qddyxZiPinWGTSuGx6r4T2Fekb33z695zt/abGkx\naxKlmKSuVXDoL3OFZHmUm1HB+OWZDNanJPCW40GHsX2IsWmnbIrOROT6O8UIBP0S\n1HlgPfry9ebrcqmO1osNqTdjzvQX69vMSCPDAXmOUqkQFlVtUrbBfzyAf9ACQzc6\nCZZEG4l4rTUZc6Tg/YuBp6iBPVk1+QH9sK0HGbVlkJzPv63oz+V5PhwLMfdn2e8Y\nNeo2pcLpdJ8f2xxiFjvsn3eUSAuZwA==\n-----END CERTIFICATE-----`;\n\n// Parse trust anchors into the in-memory trust store\nconst anchors = loadTrustAnchorsFromPem(rootPem);\n\n// Execute chain verification\nconst chainPem = leafPem + '\\n' + rootPem;\nconst result = await verifyPqChain(chainPem, {\n  trustAnchors: anchors,\n  maxDepth: 5,\n});\n\nif (result.verified) {\n  console.log('Certificate chain successfully verified!');\n} else {\n  console.error('Verification failed:', result.errors);\n}\n",
+   "quickstart_lang": "javascript",
+   "examples": [
+    "01_verify_chain.mjs",
+    "02_cbom_generation.mjs"
+   ],
+   "docs": {
+    "README.md": "https://github.com/PQBlocks/browser-pqc-verifier/blob/main/README.md",
+    "AGENTS.md": "https://github.com/PQBlocks/browser-pqc-verifier/blob/main/AGENTS.md",
+    "SECURITY_NOTES.md": "https://github.com/PQBlocks/browser-pqc-verifier/blob/main/SECURITY_NOTES.md",
+    "TESTING.md": "https://github.com/PQBlocks/browser-pqc-verifier/blob/main/TESTING.md",
+    "BENCHMARKS.md": "https://github.com/PQBlocks/browser-pqc-verifier/blob/main/BENCHMARKS.md",
+    "EVIDENCE.md": "https://github.com/PQBlocks/browser-pqc-verifier/blob/main/EVIDENCE.md",
+    "VERIFICATION_REPORT.md": "https://github.com/PQBlocks/browser-pqc-verifier/blob/main/VERIFICATION_REPORT.md",
+    "USE_CASES.md": "https://github.com/PQBlocks/browser-pqc-verifier/blob/main/USE_CASES.md",
+    "CHANGELOG.md": "https://github.com/PQBlocks/browser-pqc-verifier/blob/main/CHANGELOG.md"
+   },
+   "sections": [
+    "Why PQBlocks Browser PQC Verifier",
+    "Installation",
+    "Usage",
+    "API Reference",
+    "Limitations",
+    "Security Considerations",
+    "Verification",
+    "Part of PQBlocks"
+   ],
+   "verified": true
+  },
+  {
    "package": "pqblocks-fips-check",
    "import": "pqblocks_fips_check",
+   "import_npm": null,
    "version": "0.1.0",
    "repo": "PQBlocks/fips-boundary-validator",
    "url": "https://github.com/PQBlocks/fips-boundary-validator",
    "area": "Conformance",
    "kind": "pq",
+   "ecosystem": "python",
    "summary": "FIPS 203/204 boundary validator and hybrid key exchange (X25519 + ML-KEM-768) with ML-DSA-65 signatures and CBOM reporting.",
    "intro": [
     "FIPS 203/204 boundary validator and hybrid post-quantum key exchange (X25519 + ML-KEM-768) with ML-DSA-65 signatures and CBOM reporting."
    ],
    "keywords": [
-    "post-quantum",
-    "pqc",
+    "boundary-validation",
+    "cnsa",
     "fips-203",
     "fips-204",
-    "ml-kem",
     "ml-dsa",
-    "cnsa",
-    "boundary-validation"
+    "ml-kem",
+    "post-quantum",
+    "pqc"
    ],
    "topics": [
     "cnsa",
@@ -1161,10 +1492,18 @@
    "python": ">=3.11",
    "cli": [],
    "status": "Alpha",
-   "on_pypi": null,
-   "install": "pip install git+https://github.com/PQBlocks/fips-boundary-validator",
+   "on_pypi": "0.1.0",
+   "on_npm": null,
+   "install": "pip install pqblocks-fips-check",
+   "install_pip": "pip install pqblocks-fips-check",
+   "install_npm": null,
+   "install_c": null,
+   "has_c_sdk": false,
+   "c_headers": [],
+   "c_libs": [],
    "needs_liboqs": true,
    "quickstart": "from pqblocks_fips_check import (\n    hybrid_encap,\n    hybrid_decap,\n    sign,\n    verify_sig,\n    generate_cbom,\n    PQCUnavailableError,\n)\nfrom pqblocks_fips_check.hybrid import hybrid_keygen\n\n# 1. Hybrid key exchange (X25519 + ML-KEM-768)\nalice_pk, alice_sk = hybrid_keygen()\nbob_pk, bob_sk = hybrid_keygen()\n\n# Alice encapsulates shared secret for Bob\nct, ss_alice = hybrid_encap(bob_pk, b\"session-context\")\n\n# Bob decapsulates the ciphertext\n_, ss_bob = hybrid_decap(bob_sk, ct)\nassert ss_alice == ss_bob\n\n# 2. ML-DSA-65 signature with context binding\nsig = sign(b\"Critical message payload\", context=b\"audit-auth\")\nassert verify_sig(b\"Critical message payload\", sig, context=b\"audit-auth\")\n\n# 3. Export SPDX CBOM\ncbom_json = generate_cbom()\nassert \"ML-KEM-768\" in cbom_json and \"ML-DSA-65\" in cbom_json\n",
+   "quickstart_lang": "python",
    "examples": [
     "02_fips_boundary_check.py",
     "quickstart.py"
@@ -1193,24 +1532,26 @@
   {
    "package": "pqblocks-anneal-sa",
    "import": "pqblocks_anneal_sa",
+   "import_npm": null,
    "version": "0.1.0",
    "repo": "PQBlocks/simulated-annealing",
    "url": "https://github.com/PQBlocks/simulated-annealing",
    "area": "Quantum-inspired",
    "kind": "optimizer",
+   "ecosystem": "python",
    "summary": "Simulated Annealing heuristic solver for Ising and QUBO optimization problems. Quantum-inspired classical optimization, not cryptography.",
    "intro": [
     "Classical Simulated Annealing heuristic solver for Ising spin-glass and QUBO optimization problems with automatic parameter derivation.",
     "**Domain Classification**: Quantum-inspired classical optimisation: not cryptography, no security claim."
    ],
    "keywords": [
-    "simulated-annealing",
-    "ising",
-    "qubo",
     "combinatorial-optimization",
-    "quantum-inspired",
     "heuristic",
-    "numba"
+    "ising",
+    "numba",
+    "quantum-inspired",
+    "qubo",
+    "simulated-annealing"
    ],
    "topics": [
     "combinatorial-optimization",
@@ -1229,9 +1570,17 @@
    ],
    "status": "Alpha",
    "on_pypi": "0.1.0",
+   "on_npm": null,
    "install": "pip install pqblocks-anneal-sa",
+   "install_pip": "pip install pqblocks-anneal-sa",
+   "install_npm": null,
+   "install_c": null,
+   "has_c_sdk": false,
+   "c_headers": [],
+   "c_libs": [],
    "needs_liboqs": false,
    "quickstart": "import numpy as np\nfrom pqblocks_anneal_sa import simulated_annealing\n\n# 1. Define 4-spin Ising problem (couplings J and linear biases h)\nJ = np.array([\n    [0.0, 1.0, -1.0, 0.0],\n    [1.0, 0.0, 1.0, -1.0],\n    [-1.0, 1.0, 0.0, 1.0],\n    [0.0, -1.0, 1.0, 0.0],\n])\nh = np.array([0.5, -0.3, 0.2, -0.1])\n\n# 2. Solve with auto-derived parameters\nresult = simulated_annealing(J, h, num_sweeps=100, num_reads=10, seed=42)\n\n# 3. Retrieve best solution\nbest_idx = np.argmin(result[\"energies\"])\nprint(f\"Best energy: {result['energies'][best_idx]:.6f}\")\nprint(f\"Sample: {result['samples'][best_idx].tolist()}\")\n",
+   "quickstart_lang": "python",
    "examples": [
     "02_simulated_annealing_schedules.py",
     "quickstart.py"
@@ -1261,25 +1610,27 @@
   {
    "package": "pqblocks-anneal-schedule",
    "import": "pqblocks_anneal_schedule",
+   "import_npm": null,
    "version": "0.1.0",
    "repo": "PQBlocks/annealing-schedule",
    "url": "https://github.com/PQBlocks/annealing-schedule",
    "area": "Quantum-inspired",
    "kind": "optimizer",
+   "ecosystem": "python",
    "summary": "Quantum-inspired instance-adaptive simulated annealing with statistics-driven schedule generation for Ising and QUBO optimization problems. Quantum-inspired classical optimization, not cryptography.",
    "intro": [
     "Quantum-inspired instance-adaptive simulated annealing with statistics-driven schedule generation for Ising and QUBO optimization problems.",
     "**Domain Classification**: Quantum-inspired classical optimisation: not cryptography, no security claim."
    ],
    "keywords": [
-    "annealing-schedule",
-    "simulated-annealing",
-    "quantum-inspired",
-    "ising",
-    "qubo",
     "adaptive-schedule",
+    "annealing-schedule",
+    "ising",
+    "msgpack",
     "numba",
-    "msgpack"
+    "quantum-inspired",
+    "qubo",
+    "simulated-annealing"
    ],
    "topics": [
     "ising",
@@ -1297,9 +1648,17 @@
    "cli": [],
    "status": "Alpha",
    "on_pypi": "0.1.0",
+   "on_npm": null,
    "install": "pip install pqblocks-anneal-schedule",
+   "install_pip": "pip install pqblocks-anneal-schedule",
+   "install_npm": null,
+   "install_c": null,
+   "has_c_sdk": false,
+   "c_headers": [],
+   "c_libs": [],
    "needs_liboqs": false,
    "quickstart": "import numpy as np\nfrom pqblocks_anneal_schedule import (\n    compute_instance_stats,\n    generate_schedule,\n    simulated_annealing,\n)\n\n# Define a 4-spin Ising ring\nJ = np.array([\n    [0.0, -1.0,  0.0,  1.0],\n    [-1.0,  0.0, -1.0,  0.0],\n    [0.0, -1.0,  0.0, -1.0],\n    [1.0,  0.0, -1.0,  0.0]\n], dtype=float)\nh = np.zeros(4, dtype=float)\n\n# Extract graph statistics and synthesize adaptive schedule\nstats = compute_instance_stats(J, h)\nschedule = generate_schedule(stats, n=4, max_degree=2, budget_steps=64)\n\n# Execute simulated annealing\nresult = simulated_annealing(J, h, schedule, seed=42, num_steps=64, num_runs=1)\n\nprint(f\"Best Energy: {result.best_energy:.6f}\")\nprint(\"Best Config:\", result.best_config)\n",
+   "quickstart_lang": "python",
    "examples": [
     "02_adaptive_schedule_comparison.py",
     "quickstart.py"
@@ -1329,25 +1688,27 @@
   {
    "package": "pqblocks-anneal-sqa",
    "import": "pqblocks_anneal_sqa",
+   "import_npm": null,
    "version": "0.1.0",
    "repo": "PQBlocks/simulated-quantum-annealing",
    "url": "https://github.com/PQBlocks/simulated-quantum-annealing",
    "area": "Quantum-inspired",
    "kind": "optimizer",
+   "ecosystem": "python",
    "summary": "Simulated Quantum Annealing (Path-Integral Monte Carlo via Suzuki-Trotter decomposition) heuristic solver for Ising and QUBO optimization. Quantum-inspired classical optimization, not cryptography.",
    "intro": [
     "Simulated Quantum Annealing (Path-Integral Monte Carlo via Suzuki-Trotter decomposition) heuristic solver for Ising and QUBO optimization problems.",
     "**Domain Classification**: Quantum-inspired classical optimisation: not cryptography, no security claim."
    ],
    "keywords": [
+    "ising",
+    "numba",
+    "path-integral",
+    "quantum-inspired",
+    "qubo",
     "simulated-quantum-annealing",
     "sqa",
-    "ising",
-    "qubo",
-    "quantum-inspired",
-    "path-integral",
-    "suzuki-trotter",
-    "numba"
+    "suzuki-trotter"
    ],
    "topics": [
     "ising",
@@ -1365,9 +1726,17 @@
    "cli": [],
    "status": "Alpha",
    "on_pypi": null,
+   "on_npm": null,
    "install": "pip install git+https://github.com/PQBlocks/simulated-quantum-annealing",
+   "install_pip": "pip install git+https://github.com/PQBlocks/simulated-quantum-annealing",
+   "install_npm": null,
+   "install_c": null,
+   "has_c_sdk": false,
+   "c_headers": [],
+   "c_libs": [],
    "needs_liboqs": false,
    "quickstart": "from pqblocks_anneal_sqa import SimulatedQuantumAnnealingSampler\n\n# 1. Define 4-spin Ising problem\nh = [-1.0, 1.0, 2.0, -2.0]\nJ = [\n    [0.0, 1.0, -1.0, 2.0],\n    [0.0, 0.0, 1.0, -1.0],\n    [0.0, 0.0, 0.0, -2.0],\n    [0.0, 0.0, 0.0, 0.0],\n]\n\n# 2. Initialize SQA solver\nsampler = SimulatedQuantumAnnealingSampler()\n\n# 3. Sample Ising ground state\nsamples, energies = sampler.sample_ising(h, J, num_sweeps=1000, beta=5.0, P=32)\n\nprint(\"Best Spin State:\", samples[0].tolist())\nprint(f\"Best Energy: {energies[0]:.6f}\")\n",
+   "quickstart_lang": "python",
    "examples": [
     "02_trotter_monte_carlo_annealing.py",
     "quickstart.py"
@@ -1397,11 +1766,13 @@
   {
    "package": "pqblocks-bifurcation",
    "import": "pqblocks_bifurcation",
+   "import_npm": null,
    "version": "0.1.0",
    "repo": "PQBlocks/simulated-bifurcation",
    "url": "https://github.com/PQBlocks/simulated-bifurcation",
    "area": "Quantum-inspired",
    "kind": "optimizer",
+   "ecosystem": "python",
    "summary": "Simulated Bifurcation (ballistic and discrete) heuristic solver for Ising and QUBO problems. Quantum-inspired classical optimization, not cryptography.",
    "intro": [
     "Simulated Bifurcation solver for Ising and QUBO minimisation, in ballistic (bSB) and discrete (dSB) form.",
@@ -1409,14 +1780,14 @@
     "Implements the algorithms of Goto et al., *Science Advances* 2019 and 2021. Quantum-inspired classical optimisation: **not cryptography, no security claim**."
    ],
    "keywords": [
-    "simulated-bifurcation",
-    "ising",
-    "qubo",
     "combinatorial-optimization",
-    "quantum-inspired",
     "heuristic",
+    "ising",
     "max-cut",
-    "numba"
+    "numba",
+    "quantum-inspired",
+    "qubo",
+    "simulated-bifurcation"
    ],
    "topics": [
     "combinatorial-optimization",
@@ -1435,9 +1806,17 @@
    "cli": [],
    "status": "Alpha",
    "on_pypi": null,
+   "on_npm": null,
    "install": "pip install git+https://github.com/PQBlocks/simulated-bifurcation",
+   "install_pip": "pip install git+https://github.com/PQBlocks/simulated-bifurcation",
+   "install_npm": null,
+   "install_c": null,
+   "has_c_sdk": false,
+   "c_headers": [],
+   "c_libs": [],
    "needs_liboqs": false,
    "quickstart": "import numpy as np\nfrom pqblocks_bifurcation.solver import SimulatedBifurcationSampler\n\nsampler = SimulatedBifurcationSampler(seed=42, mode=\"dSB\")\nJ = np.array([[0.0, -1.0], [-1.0, 0.0]])   # couplings\nh = np.array([0.5, -0.5])                   # local fields\nspins, energy = sampler.sample_ising(J, h)\nprint(spins, energy)                        # [1 1] -1.0\n",
+   "quickstart_lang": "python",
    "examples": [
     "maxcut.py",
     "qubo.py",
@@ -1468,11 +1847,13 @@
   {
    "package": "pqblocks-digital-anneal",
    "import": "pqblocks_digital_anneal",
+   "import_npm": null,
    "version": "0.1.0",
    "repo": "PQBlocks/digital-annealing",
    "url": "https://github.com/PQBlocks/digital-annealing",
    "area": "Quantum-inspired",
    "kind": "optimizer",
+   "ecosystem": "python",
    "summary": "Digital Annealer-style parallel-trial heuristic solver for Ising and QUBO optimization problems. Quantum-inspired classical optimization, not cryptography.",
    "intro": [
     "Digital Annealer-style parallel-trial heuristic solver for Ising and QUBO optimization problems with dynamic plateau-escape mechanisms.",
@@ -1480,12 +1861,12 @@
    ],
    "keywords": [
     "digital-annealing",
-    "parallel-trial",
-    "ising",
-    "qubo",
-    "quantum-inspired",
     "heuristic",
-    "numba"
+    "ising",
+    "numba",
+    "parallel-trial",
+    "quantum-inspired",
+    "qubo"
    ],
    "topics": [
     "digital-annealing",
@@ -1502,9 +1883,17 @@
    "cli": [],
    "status": "Alpha",
    "on_pypi": null,
+   "on_npm": null,
    "install": "pip install git+https://github.com/PQBlocks/digital-annealing",
+   "install_pip": "pip install git+https://github.com/PQBlocks/digital-annealing",
+   "install_npm": null,
+   "install_c": null,
+   "has_c_sdk": false,
+   "c_headers": [],
+   "c_libs": [],
    "needs_liboqs": false,
    "quickstart": "import numpy as np\nfrom pqblocks_digital_anneal import DigitalAnnealerSampler\n\n# 1. Define 4-spin Ising problem\nN = 4\nJ = np.zeros((N, N))\nJ[0, 1] = J[1, 0] = 1.0\nJ[1, 2] = J[2, 1] = -1.0\nJ[2, 3] = J[3, 2] = 1.0\nh = np.array([1.0, -1.0, 0.0, 0.0])\n\n# 2. Sample with Digital Annealer\nsampler = DigitalAnnealerSampler(seed=42)\nresults = sampler.sample(J, h, num_sweeps=1000, num_reads=1)\n\n# 3. Retrieve optimal solution\nbest = min(results, key=lambda x: x[\"energy\"])\nprint(f\"Best energy: {best['energy']:.6f}\")\nprint(\"Spin State:\", best[\"sample\"].tolist())\n",
+   "quickstart_lang": "python",
    "examples": [
     "02_parallel_trial_plateau_escape.py",
     "quickstart.py"
@@ -1534,25 +1923,27 @@
   {
    "package": "pqblocks-population-anneal",
    "import": "pqblocks_population_anneal",
+   "import_npm": null,
    "version": "0.1.0",
    "repo": "PQBlocks/population-annealing",
    "url": "https://github.com/PQBlocks/population-annealing",
    "area": "Quantum-inspired",
    "kind": "optimizer",
+   "ecosystem": "python",
    "summary": "Population Annealing Monte Carlo heuristic solver for Ising models and QUBO combinatorial optimization. Quantum-inspired classical optimization, not cryptography.",
    "intro": [
     "Quantum-inspired Population Annealing Monte Carlo heuristic solver for Ising and QUBO combinatorial optimization.",
     "**Domain Classification**: Quantum-inspired classical optimisation: not cryptography, no security claim."
    ],
    "keywords": [
-    "population-annealing",
-    "monte-carlo",
-    "ising",
-    "qubo",
-    "quantum-inspired",
+    "free-energy",
     "heuristic",
-    "resampling",
-    "free-energy"
+    "ising",
+    "monte-carlo",
+    "population-annealing",
+    "quantum-inspired",
+    "qubo",
+    "resampling"
    ],
    "topics": [
     "free-energy",
@@ -1570,9 +1961,17 @@
    "cli": [],
    "status": "Alpha",
    "on_pypi": null,
+   "on_npm": null,
    "install": "pip install git+https://github.com/PQBlocks/population-annealing",
+   "install_pip": "pip install git+https://github.com/PQBlocks/population-annealing",
+   "install_npm": null,
+   "install_c": null,
+   "has_c_sdk": false,
+   "c_headers": [],
+   "c_libs": [],
    "needs_liboqs": false,
    "quickstart": "import numpy as np\nfrom pqblocks_population_anneal import PopulationAnnealingSampler\n\n# Define a 4-spin chain problem\nh = np.array([0.5, -0.3, 0.2, -0.1])\nJ = np.array([\n    [0.0, 1.0, -1.0, 0.0],\n    [1.0, 0.0, 1.0, -1.0],\n    [-1.0, 1.0, 0.0, 1.0],\n    [0.0, -1.0, 1.0, 0.0]\n])\n\n# Initialize sampler with 100 replicas and 10 sweeps per temperature step\nsampler = PopulationAnnealingSampler(num_replicas=100, num_sweeps=10)\nbest_state, best_energy, free_energy = sampler.sample(h, J, seed=42)\n\nprint(f\"Best Spin State: {best_state}\")\nprint(f\"Best Energy: {best_energy:.6f}\")\nprint(f\"Estimated Free Energy: {free_energy:.6f}\")\n",
+   "quickstart_lang": "python",
    "examples": [
     "02_population_annealing_free_energy.py",
     "quickstart.py"
@@ -1601,25 +2000,27 @@
   {
    "package": "pqblocks-qiea",
    "import": "pqblocks_qiea",
+   "import_npm": null,
    "version": "0.1.0",
    "repo": "PQBlocks/quantum-inspired-evolutionary",
    "url": "https://github.com/PQBlocks/quantum-inspired-evolutionary",
    "area": "Quantum-inspired",
    "kind": "optimizer",
+   "ecosystem": "python",
    "summary": "Quantum-Inspired Evolutionary Algorithm (QIEA) with Q-bit representations and quantum rotation gates for Ising and QUBO optimization problems. Quantum-inspired classical optimization, not cryptography.",
    "intro": [
     "Quantum-Inspired Evolutionary Algorithm (QIEA) with Q-bit representations and quantum rotation gates for Ising and QUBO optimization problems.",
     "**Domain Classification**: Quantum-inspired classical optimisation: not cryptography, no security claim."
    ],
    "keywords": [
+    "evolutionary-algorithm",
+    "heuristic",
+    "ising",
+    "q-bit",
     "qiea",
     "quantum-inspired",
-    "evolutionary-algorithm",
-    "q-bit",
     "quantum-rotation-gate",
-    "ising",
-    "qubo",
-    "heuristic"
+    "qubo"
    ],
    "topics": [
     "evolutionary-algorithm",
@@ -1637,9 +2038,17 @@
    "cli": [],
    "status": "Alpha",
    "on_pypi": null,
+   "on_npm": null,
    "install": "pip install git+https://github.com/PQBlocks/quantum-inspired-evolutionary",
+   "install_pip": "pip install git+https://github.com/PQBlocks/quantum-inspired-evolutionary",
+   "install_npm": null,
+   "install_c": null,
+   "has_c_sdk": false,
+   "c_headers": [],
+   "c_libs": [],
    "needs_liboqs": false,
    "quickstart": "import numpy as np\nfrom pqblocks_qiea import solve_ising\n\n# 4-spin antiferromagnetic ring\nN = 4\nh = np.zeros(N)\nJ = np.zeros((N, N))\nfor i in range(N):\n    j = (i + 1) % N\n    J[i, j] = J[j, i] = 1.0\n\n# Solve using QIEA\nbest_spins, best_energy = solve_ising(\n    h=h,\n    J=J,\n    num_generations=100,\n    seed=42\n)\n\nprint(\"Best Spin State:\", best_spins.tolist())\nprint(f\"Best Energy: {best_energy:.6f}\")\n",
+   "quickstart_lang": "python",
    "examples": [
     "02_q_bit_rotation_optimization.py",
     "quickstart.py"
@@ -1667,23 +2076,25 @@
   {
    "package": "pqblocks-qubo",
    "import": "pqblocks_qubo",
+   "import_npm": null,
    "version": "0.1.0",
    "repo": "PQBlocks/qubo-core",
    "url": "https://github.com/PQBlocks/qubo-core",
    "area": "Quantum-inspired",
    "kind": "optimizer",
+   "ecosystem": "python",
    "summary": "Unified mathematical representation and converter library for Quadratic Unconstrained Binary Optimization (QUBO) and Ising formulations.",
    "intro": [
     "Unified mathematical representation and converter library for Quadratic Unconstrained Binary Optimization (QUBO) and Ising formulations.",
     "**Domain Classification**: Quantum-inspired classical optimisation: not cryptography, no security claim."
    ],
    "keywords": [
-    "qubo",
+    "bqm",
+    "combinatorial-optimization",
     "ising",
     "optimization",
     "quantum-inspired",
-    "combinatorial-optimization",
-    "bqm"
+    "qubo"
    ],
    "topics": [
     "bqm",
@@ -1699,9 +2110,17 @@
    "cli": [],
    "status": "Alpha",
    "on_pypi": null,
+   "on_npm": null,
    "install": "pip install git+https://github.com/PQBlocks/qubo-core",
+   "install_pip": "pip install git+https://github.com/PQBlocks/qubo-core",
+   "install_npm": null,
+   "install_c": null,
+   "has_c_sdk": false,
+   "c_headers": [],
+   "c_libs": [],
    "needs_liboqs": false,
    "quickstart": "import networkx as nx\nfrom pqblocks_qubo import load_maxcut, to_qubo\n\n# 1. Build a graph and construct native Ising model for MaxCut\nG = nx.cycle_graph(4)\nbqm_ising = load_maxcut(G)\n\n# 2. Convert transparently to QUBO\nbqm_qubo = to_qubo(bqm_ising)\n\n# 3. Evaluate state energy (deterministic evaluation)\nsample = {0: 0, 1: 1, 2: 0, 3: 1}\nprint(f\"QUBO Energy: {bqm_qubo.energy(sample)}\")\n",
+   "quickstart_lang": "python",
    "examples": [
     "02_qubo_combinatorial_problems.py",
     "quickstart.py"
@@ -1730,25 +2149,27 @@
   {
    "package": "pqblocks-qubo-bench",
    "import": "pqblocks_qubo_bench",
+   "import_npm": null,
    "version": "0.1.0",
    "repo": "PQBlocks/qubo-benchmark-harness",
    "url": "https://github.com/PQBlocks/qubo-benchmark-harness",
    "area": "Quantum-inspired",
    "kind": "optimizer",
+   "ecosystem": "python",
    "summary": "Benchmarking harness and standard instance loaders for quantum-inspired optimization algorithms against classical baselines.",
    "intro": [
     "Standardized benchmarking harness, instance loaders, and metric evaluators for quantum-inspired optimization algorithms and classical baseline solvers.",
     "**Domain Classification**: Quantum-inspired classical optimisation: not cryptography, no security claim."
    ],
    "keywords": [
-    "qubo",
     "benchmarks",
-    "tts",
-    "time-to-solution",
     "ising",
+    "loaders",
     "optimization",
     "quantum-inspired",
-    "loaders"
+    "qubo",
+    "time-to-solution",
+    "tts"
    ],
    "topics": [
     "benchmarks",
@@ -1768,9 +2189,17 @@
    ],
    "status": "Alpha",
    "on_pypi": null,
+   "on_npm": null,
    "install": "pip install git+https://github.com/PQBlocks/qubo-benchmark-harness",
+   "install_pip": "pip install git+https://github.com/PQBlocks/qubo-benchmark-harness",
+   "install_npm": null,
+   "install_c": null,
+   "has_c_sdk": false,
+   "c_headers": [],
+   "c_libs": [],
    "needs_liboqs": false,
    "quickstart": "from pqblocks_qubo_bench.tts_engine import calculate_tts\n\n# Timing data: list of (runtime_seconds, success_boolean) tuples\nruns = [(0.012, True), (0.015, False), (0.011, True), (0.014, True)]\n\n# Calculate Time-To-Solution for 99% target confidence\ntts = calculate_tts(runs, target_prob=0.99)\nprint(f\"Calculated TTS (99% target): {tts:.4f}s\")\n",
+   "quickstart_lang": "python",
    "examples": [
     "02_benchmark_harness_evaluation.py",
     "quickstart.py"
@@ -1795,6 +2224,85 @@
     "Fair Benchmarking Disclaimer",
     "Verification & Testing",
     "License"
+   ],
+   "verified": true
+  },
+  {
+   "package": "pqblocks-sparse-bifurcation",
+   "import": "pqblocks_sparse_bifurcation",
+   "import_npm": null,
+   "version": "0.1.0",
+   "repo": "PQBlocks/sparse-bifurcation",
+   "url": "https://github.com/PQBlocks/sparse-bifurcation",
+   "area": "Quantum-inspired",
+   "kind": "optimizer",
+   "ecosystem": "python",
+   "summary": "Sparse Discrete Simulated Bifurcation (dSB) heuristic solver for large-scale Ising and QUBO combinatorial optimization.",
+   "intro": [
+    "quantum-inspired classical optimization — not cryptography, no security claim",
+    "High-performance sparse matrix Discrete Simulated Bifurcation (dSB) heuristic solver for large-scale Quadratic Unconstrained Binary Optimization (QUBO) and Ising problems."
+   ],
+   "keywords": [
+    "bifurcation",
+    "ising",
+    "optimization",
+    "quantum-inspired",
+    "qubo",
+    "simulated-bifurcation",
+    "sparse"
+   ],
+   "topics": [
+    "ising",
+    "optimization",
+    "pqblocks",
+    "python",
+    "quantum-inspired",
+    "qubo",
+    "simulated-bifurcation",
+    "sparse-matrix"
+   ],
+   "python": ">=3.11",
+   "cli": [
+    "pqblocks-sparse-bifurcation",
+    "sparse_dsb_cli"
+   ],
+   "status": "Alpha",
+   "on_pypi": null,
+   "on_npm": null,
+   "install": "pip install git+https://github.com/PQBlocks/sparse-bifurcation",
+   "install_pip": "pip install git+https://github.com/PQBlocks/sparse-bifurcation",
+   "install_npm": null,
+   "install_c": null,
+   "has_c_sdk": false,
+   "c_headers": [],
+   "c_libs": [],
+   "needs_liboqs": false,
+   "quickstart": "import numpy as np\nimport scipy.sparse as sp\nfrom pqblocks_sparse_bifurcation import SparseStructureAwareDSB\n\n# Create sparse coupling matrix (CSR)\nJ = sp.csr_matrix([[0, 1, 0], [1, 0, 1], [0, 1, 0]])\nh = np.array([0.0, 0.0, 0.0])\n\nsolver = SparseStructureAwareDSB(num_sweeps=1000, execution_mode=\"csr\", seed=42)\nsampleset = solver.sample_ising(h, J)\n\nprint(\"Best energy:\", sampleset.first.energy)\nprint(\"Best sample:\", sampleset.first.sample)\n",
+   "quickstart_lang": "python",
+   "examples": [
+    "quickstart.py",
+    "sparse_maxcut.py"
+   ],
+   "docs": {
+    "README.md": "https://github.com/PQBlocks/sparse-bifurcation/blob/main/README.md",
+    "AGENTS.md": "https://github.com/PQBlocks/sparse-bifurcation/blob/main/AGENTS.md",
+    "SECURITY_NOTES.md": "https://github.com/PQBlocks/sparse-bifurcation/blob/main/SECURITY_NOTES.md",
+    "TESTING.md": "https://github.com/PQBlocks/sparse-bifurcation/blob/main/TESTING.md",
+    "BENCHMARKS.md": "https://github.com/PQBlocks/sparse-bifurcation/blob/main/BENCHMARKS.md",
+    "EVIDENCE.md": "https://github.com/PQBlocks/sparse-bifurcation/blob/main/EVIDENCE.md",
+    "VERIFICATION_REPORT.md": "https://github.com/PQBlocks/sparse-bifurcation/blob/main/VERIFICATION_REPORT.md",
+    "USE_CASES.md": "https://github.com/PQBlocks/sparse-bifurcation/blob/main/USE_CASES.md",
+    "CHANGELOG.md": "https://github.com/PQBlocks/sparse-bifurcation/blob/main/CHANGELOG.md"
+   },
+   "sections": [
+    "Why",
+    "Installation",
+    "Usage",
+    "API reference",
+    "Limitations",
+    "Security",
+    "Verification",
+    "Part of PQBlocks"
    ],
    "verified": true
   }
