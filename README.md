@@ -12,6 +12,7 @@ claude mcp add pqblocks -- uvx --from git+https://github.com/PQBlocks/pqblocks-m
 ![Runtime dependencies](https://img.shields.io/badge/runtime%20deps-none-334155?style=flat-square)
 ![Python](https://img.shields.io/badge/python-%3E%3D3.10-1e40af?style=flat-square)
 ![Licence](https://img.shields.io/badge/licence-Apache--2.0-334155?style=flat-square)
+[![M8ven Score](https://m8ven.ai/badge/mcp/pqblocks-pqblocks-mcp-vqbf6x?v=79aca79d6dff4989a5d9d0ae38c48430)](https://m8ven.ai/mcp/pqblocks-pqblocks-mcp-vqbf6x?s=readme)
 [![Docs](https://img.shields.io/badge/docs-pqblocks.github.io-0e7490?style=flat-square)](https://pqblocks.github.io/ai/mcp/)
 
 ## Why PQBlocks MCP
