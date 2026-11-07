@@ -2188,10 +2188,10 @@
     "pqblocks-qubo-bench"
    ],
    "status": "Alpha",
-   "on_pypi": null,
+   "on_pypi": "0.1.0",
    "on_npm": null,
-   "install": "pip install git+https://github.com/PQBlocks/qubo-benchmark-harness",
-   "install_pip": "pip install git+https://github.com/PQBlocks/qubo-benchmark-harness",
+   "install": "pip install pqblocks-qubo-bench",
+   "install_pip": "pip install pqblocks-qubo-bench",
    "install_npm": null,
    "install_c": null,
    "has_c_sdk": false,
