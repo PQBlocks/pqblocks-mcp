@@ -1530,6 +1530,81 @@
    "verified": true
   },
   {
+   "package": "pqblocks-pqc-acvp-runner",
+   "import": "@pqblocks/pqc-acvp-runner",
+   "import_npm": "@pqblocks/pqc-acvp-runner",
+   "version": "1.0.0",
+   "repo": "PQBlocks/pqc-acvp-runner",
+   "url": "https://github.com/PQBlocks/pqc-acvp-runner",
+   "area": "Conformance",
+   "kind": "pq",
+   "ecosystem": "npm",
+   "summary": "NIST FIPS 203 and 204 ACVP Known Answer Test runner and Wycheproof harness in Node.js.",
+   "intro": [
+    "A high-assurance Node.js Known Answer Test (KAT) runner and Wycheproof harness for NIST Post-Quantum Cryptography standards."
+   ],
+   "keywords": [
+    "acvp",
+    "ml-dsa",
+    "ml-kem",
+    "post-quantum",
+    "pqc",
+    "wycheproof"
+   ],
+   "topics": [
+    "acvp",
+    "javascript",
+    "ml-dsa",
+    "ml-kem",
+    "post-quantum",
+    "pqblocks",
+    "pqc",
+    "wycheproof",
+    "pq-conformance"
+   ],
+   "python": null,
+   "cli": [],
+   "status": "alpha",
+   "on_pypi": null,
+   "on_npm": "1.0.0",
+   "install": "npm install @pqblocks/pqc-acvp-runner",
+   "install_pip": null,
+   "install_npm": "npm install @pqblocks/pqc-acvp-runner",
+   "install_c": null,
+   "has_c_sdk": false,
+   "c_headers": [],
+   "c_libs": [],
+   "needs_liboqs": false,
+   "quickstart": "import {\n  MLKEM768KeyGenLengthVerifier,\n  classifyResult,\n  summarizeTaxonomy,\n} from '@pqblocks/pqc-acvp-runner';\n\nconst verifier = new MLKEM768KeyGenLengthVerifier();\nconst seed = new Uint8Array(64).fill(0x42);\nconst keys = verifier.keyGen(seed);\n\nconsole.log(`ML-KEM-768 key generated: pk=${keys.publicKey.length}B, sk=${keys.secretKey.length}B`);\nconst taxonomy = summarizeTaxonomy([classifyResult({ tcId: 1 }, { matches: true, error: null })]);\nconsole.log('Taxonomy classification:', taxonomy);\n",
+   "quickstart_lang": "javascript",
+   "examples": [
+    "example-keygen.mjs",
+    "example-taxonomy.mjs"
+   ],
+   "docs": {
+    "README.md": "https://github.com/PQBlocks/pqc-acvp-runner/blob/main/README.md",
+    "AGENTS.md": "https://github.com/PQBlocks/pqc-acvp-runner/blob/main/AGENTS.md",
+    "SECURITY_NOTES.md": "https://github.com/PQBlocks/pqc-acvp-runner/blob/main/SECURITY_NOTES.md",
+    "TESTING.md": "https://github.com/PQBlocks/pqc-acvp-runner/blob/main/TESTING.md",
+    "BENCHMARKS.md": "https://github.com/PQBlocks/pqc-acvp-runner/blob/main/BENCHMARKS.md",
+    "EVIDENCE.md": "https://github.com/PQBlocks/pqc-acvp-runner/blob/main/EVIDENCE.md",
+    "VERIFICATION_REPORT.md": "https://github.com/PQBlocks/pqc-acvp-runner/blob/main/VERIFICATION_REPORT.md",
+    "USE_CASES.md": "https://github.com/PQBlocks/pqc-acvp-runner/blob/main/USE_CASES.md",
+    "CHANGELOG.md": "https://github.com/PQBlocks/pqc-acvp-runner/blob/main/CHANGELOG.md"
+   },
+   "sections": [
+    "Why",
+    "Architecture",
+    "Usage",
+    "API Reference",
+    "Limitations",
+    "Security",
+    "Verification",
+    "Part of PQBlocks"
+   ],
+   "verified": true
+  },
+  {
    "package": "pqblocks-anneal-sa",
    "import": "pqblocks_anneal_sa",
    "import_npm": null,
