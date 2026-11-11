@@ -410,6 +410,86 @@
    "verified": true
   },
   {
+   "package": "pqblocks-qse-sdk",
+   "import": "pqblocks_qse_sdk",
+   "import_npm": null,
+   "version": "0.1.0",
+   "repo": "PQBlocks/pqblock-qse-sdk",
+   "url": "https://github.com/PQBlocks/pqblock-qse-sdk",
+   "area": "PQ cryptography",
+   "kind": "pq",
+   "ecosystem": "python",
+   "summary": "Post-quantum cryptography SDK for ML-KEM, ML-DSA, and SLH-DSA (FIPS 203/204/205)",
+   "intro": [
+    "Post-quantum cryptography SDK for ML-KEM, ML-DSA, and SLH-DSA (FIPS 203/204/205)",
+    "Part of the **PQBlocks** suite of post-quantum cryptography tools and high-assurance protocol adapters.",
+    "Maintained by The PQBlocks Authors under the Apache-2.0 license."
+   ],
+   "keywords": [
+    "cryptography",
+    "fips",
+    "nist",
+    "post-quantum",
+    "pqc",
+    "sdk",
+    "security"
+   ],
+   "topics": [
+    "cryptography",
+    "fips",
+    "nist",
+    "post-quantum",
+    "pqblocks",
+    "pqc",
+    "python",
+    "sdk",
+    "security",
+    "pq-crypto"
+   ],
+   "python": ">=3.11",
+   "cli": [],
+   "status": "Alpha",
+   "on_pypi": null,
+   "on_npm": null,
+   "install": "pip install git+https://github.com/PQBlocks/pqblock-qse-sdk",
+   "install_pip": "pip install git+https://github.com/PQBlocks/pqblock-qse-sdk",
+   "install_npm": null,
+   "install_c": null,
+   "has_c_sdk": false,
+   "c_headers": [],
+   "c_libs": [],
+   "needs_liboqs": false,
+   "quickstart": "from pqblocks_qse_sdk import keypair, encapsulate, decapsulate, sign, verify\n\n# Key encapsulation (ML-KEM-768)\npk, sk = keypair(\"ml-kem-768\")\nct, ss_sender = encapsulate(pk, \"ml-kem-768\")\nss_receiver = decapsulate(sk, ct, \"ml-kem-768\")\nassert ss_sender == ss_receiver\n\n# Digital signature (ML-DSA-65)\npk_sig, sk_sig = keypair(\"ml-dsa-65\")\nsig = sign(sk_sig, b\"sample payload\", \"ml-dsa-65\")\nvalid = verify(pk_sig, sig, b\"sample payload\", \"ml-dsa-65\")\nassert valid is True\nprint(\"Verified output:\", valid)\n",
+   "quickstart_lang": "python",
+   "examples": [
+    "advanced.py",
+    "quickstart.py"
+   ],
+   "docs": {
+    "README.md": "https://github.com/PQBlocks/pqblock-qse-sdk/blob/main/README.md",
+    "AGENTS.md": "https://github.com/PQBlocks/pqblock-qse-sdk/blob/main/AGENTS.md",
+    "SECURITY_NOTES.md": "https://github.com/PQBlocks/pqblock-qse-sdk/blob/main/SECURITY_NOTES.md",
+    "TESTING.md": "https://github.com/PQBlocks/pqblock-qse-sdk/blob/main/TESTING.md",
+    "BENCHMARKS.md": "https://github.com/PQBlocks/pqblock-qse-sdk/blob/main/BENCHMARKS.md",
+    "EVIDENCE.md": "https://github.com/PQBlocks/pqblock-qse-sdk/blob/main/EVIDENCE.md",
+    "VERIFICATION_REPORT.md": "https://github.com/PQBlocks/pqblock-qse-sdk/blob/main/VERIFICATION_REPORT.md",
+    "USE_CASES.md": "https://github.com/PQBlocks/pqblock-qse-sdk/blob/main/USE_CASES.md",
+    "CHANGELOG.md": "https://github.com/PQBlocks/pqblock-qse-sdk/blob/main/CHANGELOG.md"
+   },
+   "sections": [
+    "Why PQBlocks / pqblocks-qse-sdk",
+    "Architecture",
+    "Installation",
+    "Usage",
+    "API Reference",
+    "Limitations",
+    "Security Notes",
+    "Verification",
+    "Part of PQBlocks"
+   ],
+   "verified": true
+  },
+  {
    "package": "pqblocks-agility",
    "import": "pqblocks_agility",
    "import_npm": null,
@@ -884,6 +964,89 @@
     "Architecture & Supported Usage Classes",
     "Non-Claims & Compliance Notice",
     "License"
+   ],
+   "verified": true
+  },
+  {
+   "package": "pqblocks-pqc-compat-registry",
+   "import": "@pqblocks/pqc-compat-registry",
+   "import_npm": "@pqblocks/pqc-compat-registry",
+   "version": "1.0.0",
+   "repo": "PQBlocks/pqc-compat-registry",
+   "url": "https://github.com/PQBlocks/pqc-compat-registry",
+   "area": "Migration & readiness",
+   "kind": "pq",
+   "ecosystem": "npm",
+   "summary": "A machine-readable registry of NIST post-quantum algorithm identifiers (FIPS 203/204/205 OIDs) for compliance tooling.",
+   "intro": [
+    "A registry of NIST post-quantum algorithm identifiers — OIDs, key and signature sizes, and security strengths for the 18 FIPS 203/204/205 parameter sets — for developers building PQC compliance and interop tooling.",
+    "Use it whenever you need to translate between a NIST parameter-set name (e.g. `ML-KEM-768`), its ASN.1 OID, and its wire-format sizes, without hand-copying tables.",
+    "Standards: FIPS 203 (ML-KEM), FIPS 204 (ML-DSA), FIPS 205 (SLH-DSA), RFC 9881 / RFC 9909 / RFC 9935 OID assignments."
+   ],
+   "keywords": [
+    "fips-203",
+    "fips-204",
+    "fips-205",
+    "ml-kem",
+    "post-quantum",
+    "pqc",
+    "registry"
+   ],
+   "topics": [
+    "fips-203",
+    "fips-204",
+    "fips-205",
+    "javascript",
+    "ml-kem",
+    "post-quantum",
+    "pqblocks",
+    "pqc",
+    "registry",
+    "pq-migration"
+   ],
+   "python": null,
+   "cli": [
+    "pqc-registry",
+    "registry-cli"
+   ],
+   "status": "alpha",
+   "on_pypi": null,
+   "on_npm": "1.0.0",
+   "install": "npm install @pqblocks/pqc-compat-registry",
+   "install_pip": null,
+   "install_npm": "npm install @pqblocks/pqc-compat-registry",
+   "install_c": null,
+   "has_c_sdk": false,
+   "c_headers": [],
+   "c_libs": [],
+   "needs_liboqs": false,
+   "quickstart": "import { algorithms, parse_oid, validate_oid, get_oid_by_algorithm,\n         validate_parameter_sizes, validate_slh_dsa_sizes, ALL_ALGORITHMS } from '@pqblocks/pqc-compat-registry';\n\n// 1. Look up a parameter set by name\nconst kem = algorithms['ml-kem-768'];\nconsole.log(kem.oid_dotted);        // '2.16.840.1.101.3.4.4.2'\nconsole.log(kem.key_length);        // 1184 (encapsulation key bytes)\nconsole.log(kem.security_lambda);   // 192\n\n// 2. Parse an OID back to its algorithm\nconst r = parse_oid('2.16.840.1.101.3.4.3.19');\nconsole.log(r.algorithm);           // 'ml-dsa-87'\n\n// 3. Validate that observed sizes match the FIPS table\nconsole.log(validate_oid('2.16.840.1.101.3.4.4.1'));                 // true\nconsole.log(validate_parameter_sizes('ml-dsa-44',\n  { public_key: 2560, private_key: 1312, signature: 2420 }));        // { valid: true, ... }\nconsole.log(validate_slh_dsa_sizes('slh-dsa-sha2-128s',\n  { private_key: 64, public_key: 32, signature: 7856 }));            // { valid: true, ... }\n\n// 4. Reverse lookup: name -> OID\nconsole.log(get_oid_by_algorithm('slh-dsa-shake-256f')); // '2.16.840.1.101.3.4.3.31'\nconsole.log(ALL_ALGORITHMS.length);                              // 18\n",
+   "quickstart_lang": "javascript",
+   "examples": [
+    "basic-lookup.mjs",
+    "validate-sizes.mjs"
+   ],
+   "docs": {
+    "README.md": "https://github.com/PQBlocks/pqc-compat-registry/blob/main/README.md",
+    "AGENTS.md": "https://github.com/PQBlocks/pqc-compat-registry/blob/main/AGENTS.md",
+    "SECURITY_NOTES.md": "https://github.com/PQBlocks/pqc-compat-registry/blob/main/SECURITY_NOTES.md",
+    "TESTING.md": "https://github.com/PQBlocks/pqc-compat-registry/blob/main/TESTING.md",
+    "BENCHMARKS.md": "https://github.com/PQBlocks/pqc-compat-registry/blob/main/BENCHMARKS.md",
+    "EVIDENCE.md": "https://github.com/PQBlocks/pqc-compat-registry/blob/main/EVIDENCE.md",
+    "VERIFICATION_REPORT.md": "https://github.com/PQBlocks/pqc-compat-registry/blob/main/VERIFICATION_REPORT.md",
+    "USE_CASES.md": "https://github.com/PQBlocks/pqc-compat-registry/blob/main/USE_CASES.md",
+    "CHANGELOG.md": "https://github.com/PQBlocks/pqc-compat-registry/blob/main/CHANGELOG.md"
+   },
+   "sections": [
+    "Why PQBlocks",
+    "Architecture",
+    "Installation",
+    "Usage",
+    "API reference",
+    "Limitations",
+    "Security notes",
+    "Verification",
+    "Part of PQBlocks"
    ],
    "verified": true
   },
