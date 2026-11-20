@@ -57,7 +57,6 @@
     "pqblocks_sig.h"
    ],
    "c_libs": [
-    "liboqs.so",
     "libpqblocks_errors.so",
     "libpqblocks_kem.so",
     "libpqblocks_policy.so",
