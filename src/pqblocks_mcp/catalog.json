@@ -57,6 +57,7 @@
     "pqblocks_sig.h"
    ],
    "c_libs": [
+    "liboqs.so",
     "libpqblocks_errors.so",
     "libpqblocks_kem.so",
     "libpqblocks_policy.so",
@@ -247,6 +248,80 @@
     "Security Considerations",
     "Verification",
     "Part of PQBlocks"
+   ],
+   "verified": true
+  },
+  {
+   "package": "pqblocks-hybrid-cert-validator",
+   "import": "pqblocks_hybrid_cert_validator.egg-info",
+   "import_npm": null,
+   "version": "0.1.0",
+   "repo": "PQBlocks/hybrid-cert-validator",
+   "url": "https://github.com/PQBlocks/hybrid-cert-validator",
+   "area": "PQ cryptography",
+   "kind": "pq",
+   "ecosystem": "python",
+   "summary": "Composite X.509 hybrid certificate validator enforcing NSA CNSA 2.0 policy (RSA-3072 + ML-DSA-65) per draft-ietf-lamps-pq-composite-keys.",
+   "intro": [
+    "High-assurance composite X.509 hybrid certificate validator enforcing **NSA CNSA 2.0** transition and strict policies (**RSA-3072 + ML-DSA-65**) per **draft-ietf-lamps-pq-composite-keys §5**.",
+    "Part of the **PQBlocks** post-quantum suite. Maintained by **Govind Dubey** and The PQBlocks Authors under the Apache-2.0 license."
+   ],
+   "keywords": [
+    "certificate-validation",
+    "cnsa-2-0",
+    "composite-keys",
+    "fips-204",
+    "ml-dsa",
+    "post-quantum",
+    "pqc",
+    "rsa",
+    "x509"
+   ],
+   "topics": [
+    "cnsa-2-0",
+    "post-quantum",
+    "pq-crypto",
+    "x509"
+   ],
+   "python": ">=3.10",
+   "cli": [
+    "pqblocks-hybrid-cert-validate"
+   ],
+   "status": "Stable",
+   "on_pypi": null,
+   "on_npm": null,
+   "install": "pip install git+https://github.com/PQBlocks/hybrid-cert-validator",
+   "install_pip": "pip install git+https://github.com/PQBlocks/hybrid-cert-validator",
+   "install_npm": null,
+   "install_c": null,
+   "has_c_sdk": false,
+   "c_headers": [],
+   "c_libs": [],
+   "needs_liboqs": false,
+   "quickstart": "from pqblocks.hybrid_cert_validator import (\n    HybridCertValidator,\n    CompositePolicy,\n    InvalidPEM,\n    ValidationResult,\n)\n\n# Initialize validator with CNSA 2.0 Transition Policy\nvalidator = HybridCertValidator(policy=CompositePolicy.CNSA20_TRANSITION)\nassert validator.policy == CompositePolicy.CNSA20_TRANSITION\n\n# Validate input with strict fail-safe exception handling\ntry:\n    validator.validate(b\"non-pem-data\")\nexcept InvalidPEM:\n    pass  # Fail-safe rejection of invalid inputs\n",
+   "quickstart_lang": "python",
+   "examples": [],
+   "docs": {
+    "README.md": "https://github.com/PQBlocks/hybrid-cert-validator/blob/main/README.md",
+    "AGENTS.md": "https://github.com/PQBlocks/hybrid-cert-validator/blob/main/AGENTS.md",
+    "SECURITY_NOTES.md": "https://github.com/PQBlocks/hybrid-cert-validator/blob/main/SECURITY_NOTES.md",
+    "TESTING.md": "https://github.com/PQBlocks/hybrid-cert-validator/blob/main/TESTING.md",
+    "BENCHMARKS.md": "https://github.com/PQBlocks/hybrid-cert-validator/blob/main/BENCHMARKS.md",
+    "EVIDENCE.md": "https://github.com/PQBlocks/hybrid-cert-validator/blob/main/EVIDENCE.md",
+    "VERIFICATION_REPORT.md": "https://github.com/PQBlocks/hybrid-cert-validator/blob/main/VERIFICATION_REPORT.md",
+    "USE_CASES.md": "https://github.com/PQBlocks/hybrid-cert-validator/blob/main/USE_CASES.md",
+    "CHANGELOG.md": "https://github.com/PQBlocks/hybrid-cert-validator/blob/main/CHANGELOG.md"
+   },
+   "sections": [
+    "Overview",
+    "Key Features",
+    "Installation",
+    "CLI Usage",
+    "Python API Quickstart",
+    "API Reference",
+    "Testing & Verification",
+    "Author & Maintainers",
+    "License"
    ],
    "verified": true
   },
@@ -1381,6 +1456,77 @@
     "Security notes",
     "Verification",
     "Part of PQBlocks"
+   ],
+   "verified": true
+  },
+  {
+   "package": "pqblocks-tls",
+   "import": "pqblocks_tls",
+   "import_npm": null,
+   "version": "0.1.0",
+   "repo": "PQBlocks/tls-hybrid-fuzzer",
+   "url": "https://github.com/PQBlocks/tls-hybrid-fuzzer",
+   "area": "Interoperability",
+   "kind": "pq",
+   "ecosystem": "python",
+   "summary": "Post-quantum hybrid TLS 1.3 handshake fuzzer and verification harness (X25519 + ML-KEM-768).",
+   "intro": [
+    "Post-quantum hybrid TLS 1.3 handshake fuzzer and verification harness combining **X25519** and **ML-KEM-768** (FIPS 203).",
+    "Part of the **PQBlocks** post-quantum cryptography suite. Maintained by **Govind Dubey** and The PQBlocks Authors under the Apache-2.0 license."
+   ],
+   "keywords": [
+    "cryptography",
+    "fips-203",
+    "fuzzer",
+    "ml-kem",
+    "post-quantum",
+    "pqc",
+    "rfc-8446",
+    "tls",
+    "x25519"
+   ],
+   "topics": [
+    "ml-kem",
+    "post-quantum",
+    "pq-interop",
+    "tls"
+   ],
+   "python": ">=3.10",
+   "cli": [],
+   "status": "Stable",
+   "on_pypi": null,
+   "on_npm": null,
+   "install": "pip install git+https://github.com/PQBlocks/tls-hybrid-fuzzer",
+   "install_pip": "pip install git+https://github.com/PQBlocks/tls-hybrid-fuzzer",
+   "install_npm": null,
+   "install_c": null,
+   "has_c_sdk": false,
+   "c_headers": [],
+   "c_libs": [],
+   "needs_liboqs": false,
+   "quickstart": "from pqblocks_tls import fuzz_tls_handshake, FuzzResults\n\n# Execute 1,000 hybrid handshake iterations with a deterministic seed\nresults: FuzzResults = fuzz_tls_handshake(\n    algorithms=(\"X25519\", \"ML-KEM-768\"),\n    iterations=1000,\n    max_latency_ms=50,\n    seed=42,\n)\n\nprint(f\"Passed: {results.passed}/{results.total_iterations}\")\nprint(f\"Elapsed: {results.elapsed_ms} ms\")\nassert results.all_passed()\n",
+   "quickstart_lang": "python",
+   "examples": [],
+   "docs": {
+    "README.md": "https://github.com/PQBlocks/tls-hybrid-fuzzer/blob/main/README.md",
+    "AGENTS.md": "https://github.com/PQBlocks/tls-hybrid-fuzzer/blob/main/AGENTS.md",
+    "SECURITY_NOTES.md": "https://github.com/PQBlocks/tls-hybrid-fuzzer/blob/main/SECURITY_NOTES.md",
+    "TESTING.md": "https://github.com/PQBlocks/tls-hybrid-fuzzer/blob/main/TESTING.md",
+    "BENCHMARKS.md": "https://github.com/PQBlocks/tls-hybrid-fuzzer/blob/main/BENCHMARKS.md",
+    "EVIDENCE.md": "https://github.com/PQBlocks/tls-hybrid-fuzzer/blob/main/EVIDENCE.md",
+    "VERIFICATION_REPORT.md": "https://github.com/PQBlocks/tls-hybrid-fuzzer/blob/main/VERIFICATION_REPORT.md",
+    "USE_CASES.md": "https://github.com/PQBlocks/tls-hybrid-fuzzer/blob/main/USE_CASES.md",
+    "CHANGELOG.md": "https://github.com/PQBlocks/tls-hybrid-fuzzer/blob/main/CHANGELOG.md"
+   },
+   "sections": [
+    "Overview",
+    "Key Features",
+    "Installation",
+    "Quickstart",
+    "API Reference",
+    "Testing & Verification",
+    "Author & Maintainers",
+    "License"
    ],
    "verified": true
   },
