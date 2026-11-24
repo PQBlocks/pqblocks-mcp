@@ -253,7 +253,7 @@
   },
   {
    "package": "pqblocks-hybrid-cert-validator",
-   "import": "pqblocks_hybrid_cert_validator.egg-info",
+   "import": "pqblocks.hybrid_cert_validator",
    "import_npm": null,
    "version": "0.1.0",
    "repo": "PQBlocks/hybrid-cert-validator",
@@ -281,7 +281,8 @@
     "cnsa-2-0",
     "post-quantum",
     "pq-crypto",
-    "x509"
+    "x509",
+    "pqblocks"
    ],
    "python": ">=3.10",
    "cli": [
@@ -798,6 +799,98 @@
     "Quickstart",
     "Evidence Pack Architecture",
     "Non-Claims & Compliance Notice",
+    "License"
+   ],
+   "verified": true
+  },
+  {
+   "package": "pqblocks-cnsa2-cbom-auditor",
+   "import": "@pqblocks/cnsa2-cbom-auditor",
+   "import_npm": "@pqblocks/cnsa2-cbom-auditor",
+   "version": "0.1.0",
+   "repo": "PQBlocks/cnsa2-cbom-auditor",
+   "url": "https://github.com/PQBlocks/cnsa2-cbom-auditor",
+   "area": "Migration & readiness",
+   "kind": "pq",
+   "ecosystem": "npm",
+   "summary": "CycloneDX 1.6 Cryptographic Bill of Materials (CBOM) generator, validator, and comparator for NSA CNSA 2.0 and NIST PQC migration standards.",
+   "intro": [
+    "CycloneDX 1.6 Cryptographic Bill of Materials (CBOM) generator, validator, and delta comparator enforcing NSA CNSA 2.0 and NIST Post-Quantum Cryptography transition timelines."
+   ],
+   "keywords": [
+    "cbom",
+    "cnsa-2-0",
+    "cnsa2",
+    "cryptography",
+    "cyclonedx",
+    "fips203",
+    "fips204",
+    "fips205",
+    "ml-dsa",
+    "ml-kem",
+    "pkcs8",
+    "pki",
+    "post-quantum",
+    "pqblocks",
+    "pqc",
+    "slh-dsa",
+    "spki",
+    "x509"
+   ],
+   "topics": [
+    "cbom",
+    "cnsa-2-0",
+    "cnsa2",
+    "cryptography",
+    "cyclonedx",
+    "post-quantum",
+    "pq-migration",
+    "pqblocks",
+    "pqc",
+    "x509"
+   ],
+   "python": null,
+   "cli": [
+    "cnsa2-cbom",
+    "cnsa2-cbom-audit",
+    "compare",
+    "pqblocks-cnsa-evidence",
+    "verify"
+   ],
+   "status": "Stable",
+   "on_pypi": null,
+   "on_npm": null,
+   "install": "npm install git+https://github.com/PQBlocks/cnsa2-cbom-auditor",
+   "install_pip": null,
+   "install_npm": "npm install git+https://github.com/PQBlocks/cnsa2-cbom-auditor",
+   "install_c": null,
+   "has_c_sdk": false,
+   "c_headers": [],
+   "c_libs": [],
+   "needs_liboqs": false,
+   "quickstart": "const {\n  scan,\n  scanToCbom,\n  scanTarget,\n  generateCbom,\n  verifyCbom,\n  compareCboms,\n  classify\n} = require('@pqblocks/cnsa2-cbom-auditor');\n\n// 1. Scan a directory of certificates\nasync function runAudit() {\n  const result = await scanToCbom('./golden-vectors', {\n    maxFiles: 1000,\n    failOn: 'disallowed'\n  });\n\n  console.log('Total Assets Found:', result.summary.total);\n  console.log('Compliant Assets:', result.summary.compliant);\n  console.log('Disallowed Assets:', result.summary.disallowed);\n\n  // 2. Access the CycloneDX 1.6 BOM object\n  const bom = result.bom;\n  console.log('CycloneDX BOM Format:', bom.bomFormat); // \"CycloneDX\"\n  console.log('Spec Version:', bom.specVersion);       // \"1.6\"\n\n  // 3. Verify the generated CBOM\n  const verification = verifyCbom(bom);\n  console.log('CBOM Valid against Schema:', verification.valid);\n\n  // 4. Classify an individual asset\n  const sampleAsset = result.assets[0];\n  const verdict = classify(sampleAsset);\n  console.log(`Asset ${sampleAsset.file}: status=${verdict.verdict}, reason=${verdict.reason}`);\n}\n\nrunAudit().catch(console.error);\n",
+   "quickstart_lang": "javascript",
+   "examples": [],
+   "docs": {
+    "README.md": "https://github.com/PQBlocks/cnsa2-cbom-auditor/blob/main/README.md",
+    "AGENTS.md": "https://github.com/PQBlocks/cnsa2-cbom-auditor/blob/main/AGENTS.md",
+    "SECURITY_NOTES.md": "https://github.com/PQBlocks/cnsa2-cbom-auditor/blob/main/SECURITY_NOTES.md",
+    "TESTING.md": "https://github.com/PQBlocks/cnsa2-cbom-auditor/blob/main/TESTING.md",
+    "BENCHMARKS.md": "https://github.com/PQBlocks/cnsa2-cbom-auditor/blob/main/BENCHMARKS.md",
+    "EVIDENCE.md": "https://github.com/PQBlocks/cnsa2-cbom-auditor/blob/main/EVIDENCE.md",
+    "VERIFICATION_REPORT.md": "https://github.com/PQBlocks/cnsa2-cbom-auditor/blob/main/VERIFICATION_REPORT.md",
+    "USE_CASES.md": "https://github.com/PQBlocks/cnsa2-cbom-auditor/blob/main/USE_CASES.md",
+    "CHANGELOG.md": "https://github.com/PQBlocks/cnsa2-cbom-auditor/blob/main/CHANGELOG.md"
+   },
+   "sections": [
+    "Overview",
+    "Installation",
+    "CLI Usage",
+    "Exit Codes",
+    "Programmatic API",
+    "Standards Conformance",
+    "Authors & Contributors",
+    "Security & Vulnerability Reporting",
     "License"
    ],
    "verified": true
@@ -1463,7 +1556,7 @@
    "package": "pqblocks-tls",
    "import": "pqblocks_tls",
    "import_npm": null,
-   "version": "0.1.0",
+   "version": "0.2.0",
    "repo": "PQBlocks/tls-hybrid-fuzzer",
    "url": "https://github.com/PQBlocks/tls-hybrid-fuzzer",
    "area": "Interoperability",
@@ -1489,10 +1582,13 @@
     "ml-kem",
     "post-quantum",
     "pq-interop",
-    "tls"
+    "tls",
+    "pqblocks"
    ],
    "python": ">=3.10",
-   "cli": [],
+   "cli": [
+    "pqblocks-tlsfuzz"
+   ],
    "status": "Stable",
    "on_pypi": null,
    "on_npm": null,
@@ -1521,9 +1617,11 @@
    "sections": [
     "Overview",
     "Key Features",
+    "Architecture & Fuzzing Pipeline",
     "Installation",
     "Quickstart",
     "API Reference",
+    "Command-Line Interface (`pqblocks-tlsfuzz`)",
     "Testing & Verification",
     "Author & Maintainers",
     "License"
@@ -1697,7 +1795,7 @@
    "package": "pqblocks-acvp",
    "import": "pqblocks_acvp",
    "import_npm": null,
-   "version": "0.1.0",
+   "version": "0.2.0",
    "repo": "PQBlocks/acvp-conformance",
    "url": "https://github.com/PQBlocks/acvp-conformance",
    "area": "Conformance",
@@ -1733,7 +1831,9 @@
     "pq-conformance"
    ],
    "python": ">=3.11",
-   "cli": [],
+   "cli": [
+    "pqblocks-acvp"
+   ],
    "status": "Stable",
    "on_pypi": "0.1.0",
    "on_npm": null,
@@ -1763,6 +1863,7 @@
     "CHANGELOG.md": "https://github.com/PQBlocks/acvp-conformance/blob/main/CHANGELOG.md"
    },
    "sections": [
+    "Architecture & Data Flow",
     "Why PQBlocks?",
     "Installation",
     "Usage",
